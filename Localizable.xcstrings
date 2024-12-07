@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "Add Item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -37,6 +38,9 @@
 
     },
     "List View" : {
+
+    },
+    "Menu" : {
 
     },
     "New" : {

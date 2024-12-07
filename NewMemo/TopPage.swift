@@ -106,7 +106,7 @@ struct TopPage: View {
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
-            .onChange(of: searchText) { newValue in
+            .onChange(of: searchText) { //  iOS 17.0    newValue in
                 // サーチテキストが変更されたときの処理
                 // 例えば、itemsをフィルタリングするなど
             }
@@ -175,14 +175,7 @@ struct SettingsView: View {
     }
 }
 
-
 #Preview {
     TopPage()
         .modelContainer(for: Item.self, inMemory: true)
 }
-
-#Preview {
-    HomeView()
-        // .modelContainer(for: Item.self, inMemory: true)
-}
-
