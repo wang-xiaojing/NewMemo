@@ -14,6 +14,7 @@ struct TopPage: View {
     @State private var selection: String? = "Home"
     @State private var isSearchActive: Bool = false
     @State private var searchText: String = ""
+    @State private var menuPushed: Bool = false
 
     var body: some View {
         NavigationSplitView {
@@ -45,6 +46,18 @@ struct TopPage: View {
                 }
             }
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        withAnimation {
+                            menuPushed.toggle()
+                        }
+                    }) {
+                        Label("Menu", systemImage: "line.horizontal.3")
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text(selection ?? "")
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isSearchActive.toggle()
@@ -52,67 +65,21 @@ struct TopPage: View {
                         Label("Search", systemImage: "magnifyingglass")
                     }
                 }
-                ToolbarItem(placement: .principal) {
-                    Text(selection ?? "")
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: addItem) {
-                        Label("Menu", systemImage: "filemenu.and.cursorarrow")
-                    }
-                }
-                // 画面下部
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Button(action: {
-                        selection = "Home"
-                    }) {
-                        VStack {
-                            Image(systemName: "house")
-                            Text("Home").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "New"
-                    }) {
-                        VStack {
-                            Image(systemName: "text.badge.plus")
-                            Text("New").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "List"
-                    }) {
-                        VStack {
-                            Image(systemName: "list.bullet")
-                            Text("List").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "Calendar"
-                    }) {
-                        VStack {
-                            Image(systemName: "calendar")
-                            Text("Calendar").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "Settings"
-                    }) {
-                        VStack {
-                            Image(systemName: "gearshape")
-                            Text("Settings").font(.caption)
-                        }
-                    }
-                }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
-            .onChange(of: searchText) { //  iOS 17.0    newValue in
+            .onChange(of: searchText) {
                 // サーチテキストが変更されたときの処理
                 // 例えば、itemsをフィルタリングするなど
             }
+            .overlay(
+                MenuSheet()
+                    .frame(width: UIScreen.main.bounds.width * 0.8)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+                    .offset(x: menuPushed ? 0 : -UIScreen.main.bounds.width)
+                    .animation(.easeInOut, value: menuPushed)
+            )
         } detail: {
         }
     }
@@ -133,34 +100,9 @@ struct TopPage: View {
     }
 }
 
-// 各画面の定義
-struct HomeView: View {
-    var body: some View {
-        Text("Home View")
-    }
-}
-
-struct NewView: View {
-    var body: some View {
-        Text("New View")
-    }
-}
-
-struct ListView: View {
-    var body: some View {
-        Text("List View")
-    }
-}
-
-struct CalendarView: View {
-    var body: some View {
-        Text("Calendar View")
-    }
-}
-
-struct SettingsView: View {
-    var body: some View {
-        Text("Settings View")
+extension AnyTransition {
+    static var moveFromLeft: AnyTransition {
+        AnyTransition.move(edge: .leading)
     }
 }
 
