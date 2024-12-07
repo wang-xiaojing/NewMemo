@@ -10,7 +10,6 @@ import SwiftData
 
 struct TopPage: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
     @State private var selection: String? = "Home"
     @State private var isSearchActive: Bool = false
     @State private var searchText: String = ""
@@ -19,17 +18,6 @@ struct TopPage: View {
     var body: some View {
         NavigationSplitView {
             Form {
-                List {
-                    ForEach(items) { item in
-                        NavigationLink {
-                            Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                        } label: {
-                            Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                        }
-                    }
-                    .onDelete(perform: deleteItems)
-                }
-
                 switch selection {
                 case "Home":
                     HomeView()
@@ -45,6 +33,8 @@ struct TopPage: View {
                     Text("Select an item")
                 }
             }
+            .navigationTitle(selection ?? "")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -54,9 +44,6 @@ struct TopPage: View {
                     }) {
                         Label("Menu", systemImage: "line.horizontal.3")
                     }
-                }
-                ToolbarItem(placement: .principal) {
-                    Text(selection ?? "")
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -128,21 +115,6 @@ struct TopPage: View {
                     .animation(.easeInOut, value: menuPushed)
             )
         } detail: {
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
         }
     }
 }
