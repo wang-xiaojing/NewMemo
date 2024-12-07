@@ -65,6 +65,53 @@ struct TopPage: View {
                         Label("Search", systemImage: "magnifyingglass")
                     }
                 }
+                // 画面下部
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(action: {
+                        selection = "Home"
+                    }) {
+                        VStack {
+                            Image(systemName: "house")
+                            Text("Home").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "New"
+                    }) {
+                        VStack {
+                            Image(systemName: "text.badge.plus")
+                            Text("New").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "List"
+                    }) {
+                        VStack {
+                            Image(systemName: "list.bullet")
+                            Text("List").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "Calendar"
+                    }) {
+                        VStack {
+                            Image(systemName: "calendar")
+                            Text("Calendar").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "Settings"
+                    }) {
+                        VStack {
+                            Image(systemName: "gearshape")
+                            Text("Settings").font(.caption)
+                        }
+                    }
+                }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
             .onChange(of: searchText) {
