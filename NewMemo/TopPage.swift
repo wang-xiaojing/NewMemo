@@ -52,6 +52,9 @@ struct TopPage: View {
                         Label("Search", systemImage: "magnifyingglass")
                     }
                 }
+                ToolbarItem(placement: .principal) {
+                    Text(selection ?? "")
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: addItem) {
                         Label("Menu", systemImage: "filemenu.and.cursorarrow")
@@ -111,20 +114,6 @@ struct TopPage: View {
                 // 例えば、itemsをフィルタリングするなど
             }
         } detail: {
-            switch selection {
-            case "Home":
-                HomeView()
-            case "New":
-                NewView()
-            case "List":
-                ListView()
-            case "Calendar":
-                CalendarView()
-            case "Settings":
-                SettingsView()
-            default:
-                Text("Select an item")
-            }
         }
     }
 
