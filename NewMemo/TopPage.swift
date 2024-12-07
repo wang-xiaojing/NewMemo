@@ -12,6 +12,8 @@ struct TopPage: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
     @State private var selection: String? = "Home"
+    @State private var isSearchActive: Bool = false
+    @State private var searchText: String = ""
 
     var body: some View {
         NavigationSplitView {
@@ -29,7 +31,7 @@ struct TopPage: View {
 
                 switch selection {
                 case "Home":
-                     HomeView()
+                    HomeView()
                 case "New":
                     NewView()
                 case "List":
@@ -42,97 +44,88 @@ struct TopPage: View {
                     Text("Select an item")
                 }
             }
-
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                EditButton()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isSearchActive.toggle()
+                    }) {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: addItem) {
+                        Label("Menu", systemImage: "filemenu.and.cursorarrow")
+                    }
+                }
+                // 画面下部
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(action: {
+                        selection = "Home"
+                    }) {
+                        VStack {
+                            Image(systemName: "house")
+                            Text("Home").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "New"
+                    }) {
+                        VStack {
+                            Image(systemName: "text.badge.plus")
+                            Text("New").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "List"
+                    }) {
+                        VStack {
+                            Image(systemName: "list.bullet")
+                            Text("List").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "Calendar"
+                    }) {
+                        VStack {
+                            Image(systemName: "calendar")
+                            Text("Calendar").font(.caption)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        selection = "Settings"
+                    }) {
+                        VStack {
+                            Image(systemName: "gearshape")
+                            Text("Settings").font(.caption)
+                        }
+                    }
+                }
             }
-            ToolbarItem {
-                Button(action: addItem) {
-                    Label("Add Item", systemImage: "plus")
-                }
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
+            .onChange(of: searchText) { newValue in
+                // サーチテキストが変更されたときの処理
+                // 例えば、itemsをフィルタリングするなど
             }
-            // 画面下部
-            ToolbarItemGroup(placement: .bottomBar) {
-                Button(action: {
-                    selection = "Home"
-                }) {
-                    VStack {
-                        Image(systemName: "house")
-                        Text("Home").font(.caption)
-                    }
-                }
-                Spacer()
-                Button(action: {
-                    selection = "New"
-                }) {
-                    VStack {
-                        Image(systemName: "text.badge.plus")
-                        Text("New").font(.caption)
-                    }
-                }
-                Spacer()
-                Button(action: {
-                    selection = "List"
-                }) {
-                    VStack {
-                        Image(systemName: "list.bullet")
-                        Text("List").font(.caption)
-                    }
-                }
-                Spacer()
-                Button(action: {
-                    selection = "Calendar"
-                }) {
-                    VStack {
-                        Image(systemName: "calendar")
-                        Text("Calendar").font(.caption)
-                    }
-                }
-                Spacer()
-                Button(action: {
-                    selection = "Settings"
-                }) {
-                    VStack {
-                        Image(systemName: "gearshape")
-                        Text("Settings").font(.caption)
-                    }
-                }
-            }
-        }
         } detail: {
-            // if selection == "Home" {
-            //     HomeView()
-            // } else {
-            //     Text("Select an item")
-            // }
-            //  switch selection {
-            //  case "Home":
-            //      HomeView()
-            // case "New":
-            //     NewView()
-            // case "List":
-            //     ListView()
-            // case "Calendar":
-            //     CalendarView()
-            // case "Settings":
-            //     SettingsView()
-            // default:
-            //     Text("Select an item")
-            // }
+            switch selection {
+            case "Home":
+                HomeView()
+            case "New":
+                NewView()
+            case "List":
+                ListView()
+            case "Calendar":
+                CalendarView()
+            case "Settings":
+                SettingsView()
+            default:
+                Text("Select an item")
+            }
         }
-        //.navigationBarItems(
-        //    leading: Button(action: {
-        //        // 戻るボタンのアクション
-        //    }) {
-        //        Image(systemName: "arrow.left")
-        //    },
-        //    trailing: Button(action: {
-        //        // 検索ボタンのアクション
-        //    }) {
-        //        Image(systemName: "magnifyingglass")
-        //    }
-        //)
     }
 
     private func addItem() {
@@ -186,5 +179,10 @@ struct SettingsView: View {
 #Preview {
     TopPage()
         .modelContainer(for: Item.self, inMemory: true)
+}
+
+#Preview {
+    HomeView()
+        // .modelContainer(for: Item.self, inMemory: true)
 }
 
