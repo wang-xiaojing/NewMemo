@@ -1,7 +1,59 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Add Item" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新项"
+          }
+        }
+      }
+    },
+    "Calendar" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日历"
+          }
+        }
+      }
+    },
+    "Calendar View" : {
 
+    },
+    "Home" : {
+
+    },
+    "Home View" : {
+
+    },
+    "Item at %@" : {
+
+    },
+    "List" : {
+
+    },
+    "List View" : {
+
+    },
+    "New" : {
+
+    },
+    "New View" : {
+
+    },
+    "Select an item" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Settings View" : {
+
+    }
   },
   "version" : "1.0"
 }

@@ -25,7 +25,7 @@ struct NewMemoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TopPage()
         }
         .modelContainer(sharedModelContainer)
     }
