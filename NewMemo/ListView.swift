@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ListView: View {
     var body: some View {
-        Text("List View")
+        VStack {
+            Text("List View")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

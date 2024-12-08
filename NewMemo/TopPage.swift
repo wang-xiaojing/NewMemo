@@ -18,21 +18,17 @@ struct TopPage: View {
 
     var body: some View {
         NavigationSplitView {
-            Form {
-                switch selection {
-                case "Home":
-                    HomeView()
-                case "New":
-                    NewView()
-                case "List":
-                    ListView()
-                case "Calendar":
-                    CalendarView()
-                case "Settings":
-                    SettingsView()
-                default:
-                    Text("Select an item")
+            ZStack {
+                if menuPushed {
+                    Color.yellow.opacity(0.2)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation {
+                                menuPushed = false
+                            }
+                        }
                 }
+                contentForSelection(selection)
             }
             .navigationTitle(selection ?? "")
             .navigationBarTitleDisplayMode(.inline)
@@ -52,53 +48,59 @@ struct TopPage: View {
                     }) {
                         Label("Search", systemImage: "magnifyingglass")
                     }
+                    .padding()
                 }
                 // 画面下部
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Button(action: {
-                        selection = "Home"
-                    }) {
-                        VStack {
-                            Image(systemName: "house")
-                            Text("Home").font(.caption)
+                    HStack {
+                        Button(action: {
+                            selection = "Home"
+                            menuPushed = false
+                        }) {
+                            VStack {
+                                Image(systemName: "house")
+                                Text("Home").font(.caption)
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
+                            selection = "New"
+                        }) {
+                            VStack {
+                                Image(systemName: "text.badge.plus")
+                                Text("New").font(.caption)
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
+                            selection = "List"
+                        }) {
+                            VStack {
+                                Image(systemName: "list.bullet")
+                                Text("List").font(.caption)
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
+                            selection = "Calendar"
+                        }) {
+                            VStack {
+                                Image(systemName: "calendar")
+                                Text("Calendar").font(.caption)
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
+                            selection = "Settings"
+                            menuPushed = false
+                        }) {
+                            VStack {
+                                Image(systemName: "gearshape")
+                                Text("Settings").font(.caption)
+                            }
                         }
                     }
-                    Spacer()
-                    Button(action: {
-                        selection = "New"
-                    }) {
-                        VStack {
-                            Image(systemName: "text.badge.plus")
-                            Text("New").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "List"
-                    }) {
-                        VStack {
-                            Image(systemName: "list.bullet")
-                            Text("List").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "Calendar"
-                    }) {
-                        VStack {
-                            Image(systemName: "calendar")
-                            Text("Calendar").font(.caption)
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        selection = "Settings"
-                    }) {
-                        VStack {
-                            Image(systemName: "gearshape")
-                            Text("Settings").font(.caption)
-                        }
-                    }
+                    .padding()
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
@@ -108,23 +110,25 @@ struct TopPage: View {
             }
             .overlay(
                 ZStack {
-                    MenuSheet()
-                        .frame(width: UIScreen.main.bounds.width * 0.6)
+                    if selection != "Home" && selection != "Settings" {
+                        MenuSheet()
+                            .frame(width: UIScreen.main.bounds.width * 0.6)
                         // .background(Color.white)
-                        .cornerRadius(AppSetting.cornerRadius)
-                        .shadow(radius: AppSetting.shadowRadius)
-                        .opacity(0.8)
-                        .offset(x: menuPushed ? 0 : -UIScreen.main.bounds.width + dragOffset.width)
-                        .animation(.easeInOut, value: menuPushed)
-                    if !menuPushed {
-                        HStack {
-                            Rectangle()
-                                .fill(Color.gray)
-                                .cornerRadius(AppSetting.cornerRadius)
-                                .shadow(radius: AppSetting.shadowRadius)
-                                .frame(width: AppSetting.sideHandrailWidth, height: AppSetting.sideHandrailHeight)
-                                .offset(x: UIScreen.main.bounds.width * 0.03)
-                            Spacer()
+                            .cornerRadius(AppSetting.cornerRadius)
+                            .shadow(radius: AppSetting.shadowRadius)
+                            .opacity(0.8)
+                            .offset(x: menuPushed ? 0 : -UIScreen.main.bounds.width + dragOffset.width)
+                            .animation(.easeInOut, value: menuPushed)
+                        if !menuPushed {
+                            HStack {
+                                Rectangle()
+                                    .fill(Color.gray)
+                                    .cornerRadius(AppSetting.cornerRadius)
+                                    .shadow(radius: AppSetting.shadowRadius)
+                                    .frame(width: AppSetting.sideHandrailWidth, height: AppSetting.sideHandrailHeight)
+                                    .offset(x: UIScreen.main.bounds.width * 0.03)
+                                Spacer()
+                            }
                         }
                     }
                 }
@@ -151,6 +155,24 @@ struct TopPage: View {
                     }
             )
         } detail: {
+        }
+    }
+
+    @ViewBuilder
+    private func contentForSelection(_ selection: String?) -> some View {
+        switch selection {
+        case "Home":
+            HomeView()
+        case "New":
+            NewView()
+        case "List":
+            ListView()
+        case "Calendar":
+            CalendarView()
+        case "Settings":
+            SettingsView()
+        default:
+            Text("Select an item")
         }
     }
 }

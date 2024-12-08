@@ -9,7 +9,10 @@ import SwiftUI
 
 struct CalendarView: View {
     var body: some View {
-        Text("Calendar View")
+        VStack {
+            Text("Calendar View")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

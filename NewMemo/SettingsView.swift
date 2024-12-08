@@ -9,8 +9,10 @@ import SwiftUI
 
 struct SettingsView: View {
     var body: some View {
-        Text("Settings View")
-            .padding()
+        VStack {
+            Text("Settings View")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
