@@ -14,6 +14,7 @@ struct TopPage: View {
     @State private var isSearchActive: Bool = false
     @State private var searchText: String = ""
     @State private var menuPushed: Bool = false
+    @State private var dragOffset: CGSize = .zero
 
     var body: some View {
         NavigationSplitView {
@@ -106,13 +107,48 @@ struct TopPage: View {
                 // 例えば、itemsをフィルタリングするなど
             }
             .overlay(
-                MenuSheet()
-                    .frame(width: UIScreen.main.bounds.width * 0.8)
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-                    .offset(x: menuPushed ? 0 : -UIScreen.main.bounds.width)
-                    .animation(.easeInOut, value: menuPushed)
+                ZStack {
+                    MenuSheet()
+                        .frame(width: UIScreen.main.bounds.width * 0.6)
+                        // .background(Color.white)
+                        .cornerRadius(AppSetting.cornerRadius)
+                        .shadow(radius: AppSetting.shadowRadius)
+                        .opacity(0.8)
+                        .offset(x: menuPushed ? 0 : -UIScreen.main.bounds.width + dragOffset.width)
+                        .animation(.easeInOut, value: menuPushed)
+                    if !menuPushed {
+                        HStack {
+                            Rectangle()
+                                .fill(Color.gray)
+                                .cornerRadius(AppSetting.cornerRadius)
+                                .shadow(radius: AppSetting.shadowRadius)
+                                .frame(width: AppSetting.sideHandrailWidth, height: AppSetting.sideHandrailHeight)
+                                .offset(x: UIScreen.main.bounds.width * 0.03)
+                            Spacer()
+                        }
+                    }
+                }
+                , alignment: .leading     // 重なるレビューの位置を指定する（左）
+            )
+            .gesture(   // スワイプ機能
+                DragGesture()
+                    .onChanged { value in
+                        if value.translation.width > 0 {
+                            dragOffset = value.translation
+                        }
+                    }
+                    .onEnded { value in
+                        if value.translation.width > 100 {  // 右スワイプ
+                            withAnimation {
+                                menuPushed = true   // MenuSheetを表示する
+                            }
+                        } else if value.translation.width < -100 {  // 左スワイプ
+                             withAnimation {
+                                 menuPushed = false // MenuSheetを閉じる
+                             }
+                        }
+                        dragOffset = .zero
+                    }
             )
         } detail: {
         }

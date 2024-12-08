@@ -31,9 +31,6 @@
     "Home View" : {
 
     },
-    "Item at %@" : {
-
-    },
     "List" : {
 
     },
@@ -41,6 +38,9 @@
 
     },
     "Menu" : {
+
+    },
+    "Menu Content" : {
 
     },
     "New" : {

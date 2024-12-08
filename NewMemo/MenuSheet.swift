@@ -11,6 +11,7 @@ struct MenuSheet: View {
     var body: some View {
         VStack {
             Text("Menu Content")
+                .padding()
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
