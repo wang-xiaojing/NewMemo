@@ -19,7 +19,7 @@ struct TopPage: View {
     var body: some View {
         NavigationSplitView {
             ZStack {
-                if menuPushed {
+                if menuPushed && selection != "Home" && selection != "Settings" {
                     Color.yellow.opacity(0.2)
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
@@ -111,7 +111,7 @@ struct TopPage: View {
             .overlay(
                 ZStack {
                     if selection != "Home" && selection != "Settings" {
-                        MenuSheet()
+                        MenuSheet(menuPushed: $menuPushed)
                             .frame(width: UIScreen.main.bounds.width * 0.6)
                         // .background(Color.white)
                             .cornerRadius(AppSetting.cornerRadius)

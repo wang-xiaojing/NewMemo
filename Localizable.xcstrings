@@ -7,7 +7,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新项"
+            "value" : "追加"
           }
         }
       }
@@ -25,10 +25,16 @@
     "Calendar View" : {
 
     },
+    "Close" : {
+
+    },
     "Home" : {
 
     },
     "Home View" : {
+
+    },
+    "Items" : {
 
     },
     "List" : {
@@ -38,9 +44,6 @@
 
     },
     "Menu" : {
-
-    },
-    "Menu Content" : {
 
     },
     "New" : {
