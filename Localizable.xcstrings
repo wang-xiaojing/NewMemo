@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ :  %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ :  %2$@"
+          }
+        }
+      }
+    },
     "Add Item" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -32,9 +42,6 @@
 
     },
     "Home View" : {
-
-    },
-    "Items" : {
 
     },
     "List" : {

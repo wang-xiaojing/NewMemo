@@ -10,11 +10,12 @@ import SwiftData
 
 struct TopPage: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var selection: String? = "Home"
+    @State private var selection: String = "Home"
     @State private var isSearchActive: Bool = false
     @State private var searchText: String = ""
     @State private var menuPushed: Bool = false
     @State private var dragOffset: CGSize = .zero
+    @State private var selectedRow: Int? = nil
 
     var body: some View {
         NavigationSplitView {
@@ -30,7 +31,7 @@ struct TopPage: View {
                 }
                 contentForSelection(selection)
             }
-            .navigationTitle(selection ?? "")
+            .navigationTitle("\(selection) :  \(AppSetting.menuSheetItems[selectedRow ?? 0][1])")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -111,8 +112,8 @@ struct TopPage: View {
             .overlay(
                 ZStack {
                     if selection != "Home" && selection != "Settings" {
-                        MenuSheet(menuPushed: $menuPushed)
-                            .frame(width: UIScreen.main.bounds.width * 0.6)
+                        MenuSheet(menuPushed: $menuPushed, selectedRow: $selectedRow)
+                            .frame(width: UIScreen.main.bounds.width * 0.7)
                         // .background(Color.white)
                             .cornerRadius(AppSetting.cornerRadius)
                             .shadow(radius: AppSetting.shadowRadius)

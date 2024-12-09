@@ -13,6 +13,28 @@ struct AppSetting {
     public static let shadowRadius: CGFloat = 10
     public static let sideHandrailWidth: CGFloat = 5
     public static let sideHandrailHeight: CGFloat = 60
+    public static let menuSheetItems: [[String]] = [
+        ["text.document",    "Text"],
+        ["calendar",    "Date"],
+        ["clock.badge.checkmark",    "Time"],
+        ["globe.asia.australia",    "Location"],
+        ["alarm.waves.left.and.right",    "Alarm"],
+        ["music.microphone",    "Voice Rec."],
+        ["medical.thermometer",    "Thermometer"],
+        ["heart",    "Heart Rate"],
+        ["waveform.path.ecg.rectangle",    "Blood Pressure"],
+        ["figure.mixed.cardio",    "Weight Scale"],
+        ["coat",    "Wear"],
+        ["basket",    "Shopping"],
+        ["dollarsign",    "Money"],
+        ["calendar.badge.checkmark",    "Schedule"],
+        ["book",    "Diary"],
+        ["photo.artframe",    "Picture"],
+        ["frying.pan",    "Cooking"],
+        ["books.vertical.fill",    "Reading"],
+        ["cloud.sun",    "Weather"],
+        ["figure.run",    "Running"]
+    ]
 
 
 
