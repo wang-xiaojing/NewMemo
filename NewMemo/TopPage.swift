@@ -31,7 +31,7 @@ struct TopPage: View {
                 }
                 contentForSelection(selection)
             }
-            .navigationTitle("\(selection)\((selection != "Home" && selection != "Settings") ? " \(AppSetting.menuSheetItems[selectedRow][2])" : "")")
+            .navigationTitle("\(selection)\((selection != "Home" && selection != "Settings") ? "\(AppSetting.menuSheetItems[selectedRow][2])" : "")")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
