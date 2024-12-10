@@ -15,7 +15,7 @@ struct TopPage: View {
     @State private var searchText: String = ""
     @State private var menuPushed: Bool = false
     @State private var dragOffset: CGSize = .zero
-    @State private var selectedRow: Int? = nil
+    @State private var selectedRow: Int = 0
 
     var body: some View {
         NavigationSplitView {
@@ -31,7 +31,7 @@ struct TopPage: View {
                 }
                 contentForSelection(selection)
             }
-            .navigationTitle("\(selection)\((selection != "Home" && selection != "Settings") ? " \(AppSetting.menuSheetItems[selectedRow ?? 0][2])" : "")")
+            .navigationTitle("\(selection)\((selection != "Home" && selection != "Settings") ? " \(AppSetting.menuSheetItems[selectedRow][2])" : "")")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

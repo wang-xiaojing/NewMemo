@@ -12,8 +12,8 @@ struct MenuSheet: View {
     @State private var isSearchActive: Bool = false
     @State private var items: [[String]] = AppSetting.menuSheetItems
     @State private var newItem: [String] = ["", ""]
-    // @State private var selectedRow: Int? = nil
-    @Binding var selectedRow: Int?
+    // @State private var selectedRow: Int
+    @Binding var selectedRow: Int
 
     var body: some View {
         NavigationView {
@@ -67,6 +67,6 @@ struct MenuSheet: View {
 
 #Preview {
     @Previewable @State var menuPushed: Bool = true
-    @Previewable @State var selectedRow: Int? = nil
+    @Previewable @State var selectedRow: Int = 0
     MenuSheet(menuPushed: $menuPushed, selectedRow: $selectedRow)
 }
