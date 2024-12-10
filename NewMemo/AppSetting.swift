@@ -14,26 +14,26 @@ struct AppSetting {
     public static let sideHandrailWidth: CGFloat = 5
     public static let sideHandrailHeight: CGFloat = 60
     public static let menuSheetItems: [[String]] = [
-        ["text.document",    "Text"],
-        ["calendar",    "Date"],
-        ["clock.badge.checkmark",    "Time"],
-        ["globe.asia.australia",    "Location"],
-        ["alarm.waves.left.and.right",    "Alarm"],
-        ["music.microphone",    "Voice Rec."],
-        ["medical.thermometer",    "Thermometer"],
-        ["heart",    "Heart Rate"],
-        ["waveform.path.ecg.rectangle",    "Blood Pressure"],
-        ["figure.mixed.cardio",    "Weight Scale"],
-        ["coat",    "Wear"],
-        ["basket",    "Shopping"],
-        ["dollarsign",    "Money"],
-        ["calendar.badge.checkmark",    "Schedule"],
-        ["book",    "Diary"],
-        ["photo.artframe",    "Picture"],
-        ["frying.pan",    "Cooking"],
-        ["books.vertical.fill",    "Reading"],
-        ["cloud.sun",    "Weather"],
-        ["figure.run",    "Running"]
+        ["text.document", "Text", " of Text Memo."],
+        ["calendar", "Date", " of Date Memo."],
+        ["clock.badge.checkmark", "Time", " of Time Memo."],
+        ["globe.asia.australia", "Location", " of Location Memo."],
+        ["alarm.waves.left.and.right", "Alarm", " of Alarm Memo."],
+        ["music.microphone", "Voice Rec.", " of Voice Rec. Memo."],
+        ["medical.thermometer", "Thermometer", " of Thermometer Memo."],
+        ["heart", "Heart Rate", " of Heart Rate Memo."],
+        ["waveform.path.ecg.rectangle", "Blood Pressure", " of Blood Pressure Memo."],
+        ["figure.mixed.cardio", "Weight Scale", " of Weight Scale Memo."],
+        ["coat", "Wear", " of Wear Memo."],
+        ["basket", "Shopping", " of Shopping Memo."],
+        ["dollarsign", "Money", " of Money Memo."],
+        ["calendar.badge.checkmark", " of Schedule", "Schedule Memo."],
+        ["book", "Diary", " of Diary Memo."],
+        ["photo.artframe", "Picture", " of Picture Memo."],
+        ["frying.pan", "Cooking", " of Cooking Memo."],
+        ["books.vertical.fill", "Reading", " of Reading Memo."],
+        ["cloud.sun", "Weather", " of Weather Memo."],
+        ["figure.run", "Running", " of Running Memo."]
     ]
 
 
