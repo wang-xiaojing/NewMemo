@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    " ここに入力してください" : {
+
+    },
     "%@%@" : {
       "localizations" : {
         "en" : {
@@ -54,9 +57,6 @@
 
     },
     "New" : {
-
-    },
-    "New View" : {
 
     },
     "Search" : {
