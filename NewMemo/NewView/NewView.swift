@@ -16,7 +16,7 @@ struct NewView: View {
     @State private var showTagSelector: Bool = false
     @State private var showLocation: Bool = false
 
-    @State private var fontSize: CGFloat = 10
+    @State private var fontSize: CGFloat = 14
     @State private var fontColor: Color = .black
     @State private var backgroundColor: Color = .white
     @State private var textAlignment: TextAlignment = .leading
@@ -52,6 +52,7 @@ struct NewView: View {
                 }
                 ZStack(alignment: .topLeading) {
                     TextEditor(text: $text)
+                        .scrollContentBackground(.hidden)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .frame(height: textEditorHeight)
                         .font(.system(size: fontSize))
@@ -111,7 +112,15 @@ struct NewView: View {
             Spacer()
             if showFontSettings {
                 VStack {
-                    Text("書式設定")
+                    HStack {
+                        Text("書式設定")
+                        Spacer()
+                        Button(action: {
+                            showFontSettings = false
+                        }) {
+                            Text("閉じる")
+                        }
+                    }
                     HStack {
                         Text("フォントサイズ")
                         Slider(value: $fontSize, in: 10...30, step: 1)
@@ -120,22 +129,17 @@ struct NewView: View {
                         Text("フォントカラー")
                         ColorPicker("", selection: $fontColor)
                             .labelsHidden()
-                    }
-                    HStack {
+                        Spacer()
                         Text("背景色")
                         ColorPicker("", selection: $backgroundColor)
                             .labelsHidden()
-                    }
-                    Button(action: {
-                        showFontSettings = false
-                    }) {
-                        Text("閉じる")
+                        Spacer()
                     }
                 }
                 .padding()
                 .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 10)
+                .cornerRadius(AppSetting.cornerRadius)
+                .shadow(radius: AppSetting.shadowRadius)
                 .padding()
                 .onAppear {
                     hideKeyboard()
