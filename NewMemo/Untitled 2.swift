@@ -16,13 +16,24 @@ struct NewView: View {
     @State private var showTagSelector: Bool = false
     @State private var showLocation: Bool = false
 
+    @State private var fontSize: CGFloat = 10
+    @State private var fontColor: Color = .black
+    @State private var backgroundColor: Color = .white
+    @State private var textAlignment: TextAlignment = .leading
+    @State private var showFontSettings: Bool = false
+
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
                 Text(currentDateTimeString())
                 ZStack(alignment: .topLeading) {
                     TextEditor(text: $text)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .frame(height: textEditorHeight)
+                        .font(.system(size: fontSize))
+                        .foregroundColor(fontColor)
+                        .background(backgroundColor)
+                        .multilineTextAlignment(textAlignment)
                         .background(GeometryReader { geometry in
                             Color.clear.onAppear {
                                 textEditorHeight = geometry.size.height
@@ -46,44 +57,82 @@ struct NewView: View {
                         showCamera = true
                     }) {
                         Image(systemName: "camera")
-                            // .resizable()
-                            // .frame(width: 40, height: 40)
                     }
                     Button(action: {
                         showPhoto = true
                     }) {
                         Image(systemName: "photo")
-                            // .resizable()
-                            // .frame(width: 40, height: 40)
                     }
                     Button(action: {
                         showMicophon = true
                     }) {
-                        Image(systemName: "music.microphone")
-                            // .resizable()
-                            // .frame(width: 40, height: 40)
+                        Image(systemName: "mic")
                     }
                     Button(action: {
                         showTagSelector = true
                     }) {
                         Image(systemName: "tag")
-                            // .resizable()
-                            // .frame(width: 40, height: 40)
                     }
                     Button(action: {
                         showLocation = true
                     }) {
-                        Image(systemName: "globe")
-                            // .resizable()
-                            // .frame(width: 40, height: 40)
+                        Image(systemName: "location")
                     }
                     Spacer()
+                    Button(action: {
+                        textAlignment = .leading
+                    }) {
+                        Image(systemName: "text.justify.left")
+                    }
+                    Button(action: {
+                        textAlignment = .center
+                    }) {
+                        Image(systemName: "text.aligncenter")
+                    }
+                    Button(action: {
+                        textAlignment = .trailing
+                    }) {
+                        Image(systemName: "text.alignright")
+                    }
+                    Button(action: {
+                        showFontSettings = true
+                    }) {
+                        Image(systemName: "textformat")
+                    }
                 }
                 .padding()
-                Spacer()
+            }
+            Spacer()
+            if showFontSettings {
+                VStack {
+                    Text("書式設定")
+                    HStack {
+                        Text("フォントサイズ")
+                        Slider(value: $fontSize, in: 10...30, step: 1)
+                    }
+                    HStack {
+                        Text("フォントカラー")
+                        ColorPicker("", selection: $fontColor)
+                            .labelsHidden()
+                    }
+                    HStack {
+                        Text("背景色")
+                        ColorPicker("", selection: $backgroundColor)
+                            .labelsHidden()
+                    }
+                    Button(action: {
+                        showFontSettings = false
+                    }) {
+                        Text("閉じる")
+                    }
+                }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .padding()
             }
         }
-        .padding()
         .onAppear {
             adjustTextEditorHeight()
         }

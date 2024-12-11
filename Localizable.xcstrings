@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     " Enter text here" : {
       "localizations" : {
         "ja" : {
@@ -109,7 +112,22 @@
     "showTagSelector" : {
 
     },
+    "フォントカラー" : {
+
+    },
+    "フォントサイズ" : {
+
+    },
     "戻る" : {
+
+    },
+    "書式設定" : {
+
+    },
+    "背景色" : {
+
+    },
+    "閉じる" : {
 
     }
   },

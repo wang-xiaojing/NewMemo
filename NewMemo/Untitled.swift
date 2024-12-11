@@ -7,33 +7,22 @@
 
 import SwiftUI
 
-struct NewView: View {
+struct NewView_: View {
     @State private var text: String = ""
     @State private var textEditorHeight: CGFloat = 60 // 3行分の高さ
     @State private var showCamera: Bool = false
     @State private var showPhoto: Bool = false
-    @State private var showMic: Bool = false
+    @State private var showMicophon: Bool = false
     @State private var showTagSelector: Bool = false
     @State private var showLocation: Bool = false
 
-    @State private var fontSize: CGFloat = 10
-    @State private var fontColor: Color = .black
-    @State private var backgroundColor: Color = .white
-    @State private var textAlignment: TextAlignment = .leading
-    @State private var showFontSettings: Bool = false
-
     var body: some View {
-        VStack {
             VStack(alignment: .leading) {
                 Text(currentDateTimeString())
                 ZStack(alignment: .topLeading) {
                     TextEditor(text: $text)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .frame(height: textEditorHeight)
-                        .font(.system(size: fontSize))
-                        .foregroundColor(fontColor)
-                        .background(backgroundColor)
-                        .multilineTextAlignment(textAlignment)
                         .background(GeometryReader { geometry in
                             Color.clear.onAppear {
                                 textEditorHeight = geometry.size.height
@@ -64,7 +53,7 @@ struct NewView: View {
                         Image(systemName: "photo")
                     }
                     Button(action: {
-                        showMic = true
+                        showMicophon = true
                     }) {
                         Image(systemName: "music.microphone")
                     }
@@ -79,61 +68,11 @@ struct NewView: View {
                         Image(systemName: "globe")
                     }
                     Spacer()
-                    Button(action: {
-                        textAlignment = .leading
-                    }) {
-                        Image(systemName: "text.justify.left")
-                    }
-                    Button(action: {
-                        textAlignment = .center
-                    }) {
-                        Image(systemName: "text.aligncenter")
-                    }
-                    Button(action: {
-                        textAlignment = .trailing
-                    }) {
-                        Image(systemName: "text.alignright")
-                    }
-                    Button(action: {
-                        showFontSettings = true
-                    }) {
-                        Image(systemName: "textformat")
-                    }
                 }
                 .padding()
                 Spacer()
-            }
-            .padding()
-            if showFontSettings {
-                VStack {
-                    Text("書式設定")
-                    HStack {
-                        Text("フォントサイズ")
-                        Slider(value: $fontSize, in: 10...30, step: 1)
-                    }
-                    HStack {
-                        Text("フォントカラー")
-                        ColorPicker("", selection: $fontColor)
-                            .labelsHidden()
-                    }
-                    HStack {
-                        Text("背景色")
-                        ColorPicker("", selection: $backgroundColor)
-                            .labelsHidden()
-                    }
-                    Button(action: {
-                        showFontSettings = false
-                    }) {
-                        Text("閉じる")
-                    }
-                }
-                .padding()
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 10)
-                .padding()
-            }
         }
+        .padding()
         .onAppear {
             adjustTextEditorHeight()
         }
@@ -163,11 +102,11 @@ struct NewView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.white.opacity(0.9))
                     .edgesIgnoringSafeArea(.all)
-                } else if showMic {
+                } else if showMicophon {
                     VStack {
                         Text("showMicophon")
                         Button(action: {
-                            showMic = false
+                            showMicophon = false
                         }) {
                             Text("戻る")
                         }
@@ -251,4 +190,3 @@ struct NewView: View {
 #Preview {
     NewView()
 }
-
