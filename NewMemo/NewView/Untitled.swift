@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NewView: View {
+struct NewView_: View {
     @State private var text: String = ""
     @State private var textEditorHeight: CGFloat = 60 // 3行分の高さ
     @State private var showCamera: Bool = false
