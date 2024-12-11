@@ -238,6 +238,14 @@ struct NewView: View {
         let languageCode = Locale.current.language.languageCode?.identifier
         let regionCode = Locale.current.region?.identifier
 
+        // FIXME
+        // 下記言語による表示フォーマットの選択は、未完成です。
+        // ここでは、地域コード（言語コードでは無い）でフォーマットを選択しており、誤り発生易い
+        // iPhone XS Max / iOS 18.1.1 でデバッグしましたが、
+        // 地域：日本 & 言語：日本語優先で　languageCode = en, regionCode = "JP" の結果となり。
+        debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
+        debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
+
         if languageCode == "ja" || regionCode == "JP" {
             formatter.dateFormat = "yyyy年MM月dd日 EEEE HH:mm"
             formatter.locale = Locale(identifier: "ja_JP")
