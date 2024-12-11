@@ -1,8 +1,21 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    " ここに入力してください" : {
-
+    " Enter text here" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここに入力してください"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入"
+          }
+        }
+      }
     },
     "%@%@" : {
       "localizations" : {
@@ -39,7 +52,14 @@
 
     },
     "Close" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
     },
     "Home" : {
 
@@ -72,6 +92,24 @@
 
     },
     "Settings View" : {
+
+    },
+    "showCamera" : {
+
+    },
+    "showLocation" : {
+
+    },
+    "showMicophon" : {
+
+    },
+    "showPhoto" : {
+
+    },
+    "showTagSelector" : {
+
+    },
+    "戻る" : {
 
     }
   },

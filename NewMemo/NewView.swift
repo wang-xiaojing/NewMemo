@@ -10,6 +10,11 @@ import SwiftUI
 struct NewView: View {
     @State private var text: String = ""
     @State private var textEditorHeight: CGFloat = 60 // 3行分の高さ
+    @State private var showCamera: Bool = false
+    @State private var showPhoto: Bool = false
+    @State private var showMicophon: Bool = false
+    @State private var showTagSelector: Bool = false
+    @State private var showLocation: Bool = false
 
     var body: some View {
         VStack {
@@ -32,10 +37,49 @@ struct NewView: View {
                         )
                     if text.isEmpty {
                         // プレースホルダとして表示するTextを表示
-                        Text(" ここに入力してください")
+                        Text(" Enter text here")
                             .foregroundColor(.gray)
                     }
                 }
+                HStack {
+                    Button(action: {
+                        showCamera = true
+                    }) {
+                        Image(systemName: "camera")
+                            // .resizable()
+                            // .frame(width: 40, height: 40)
+                    }
+                    Button(action: {
+                        showPhoto = true
+                    }) {
+                        Image(systemName: "photo")
+                            // .resizable()
+                            // .frame(width: 40, height: 40)
+                    }
+                    Button(action: {
+                        showMicophon = true
+                    }) {
+                        Image(systemName: "music.microphone")
+                            // .resizable()
+                            // .frame(width: 40, height: 40)
+                    }
+                    Button(action: {
+                        showTagSelector = true
+                    }) {
+                        Image(systemName: "tag")
+                            // .resizable()
+                            // .frame(width: 40, height: 40)
+                    }
+                    Button(action: {
+                        showLocation = true
+                    }) {
+                        Image(systemName: "globe")
+                            // .resizable()
+                            // .frame(width: 40, height: 40)
+                    }
+                    Spacer()
+                }
+                .padding()
                 Spacer()
             }
         }
@@ -43,6 +87,71 @@ struct NewView: View {
         .onAppear {
             adjustTextEditorHeight()
         }
+        .overlay(
+            Group {
+                if showCamera {
+                    VStack {
+                        Text("showCamera")
+                        Button(action: {
+                            showCamera = false
+                        }) {
+                            Text("戻る")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.9))
+                    .edgesIgnoringSafeArea(.all)
+                } else if showPhoto {
+                    VStack {
+                        Text("showPhoto")
+                        Button(action: {
+                            showPhoto = false
+                        }) {
+                            Text("戻る")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.9))
+                    .edgesIgnoringSafeArea(.all)
+                } else if showMicophon {
+                    VStack {
+                        Text("showMicophon")
+                        Button(action: {
+                            showMicophon = false
+                        }) {
+                            Text("戻る")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.9))
+                    .edgesIgnoringSafeArea(.all)
+                } else if showTagSelector {
+                    VStack {
+                        Text("showTagSelector")
+                        Button(action: {
+                            showTagSelector = false
+                        }) {
+                            Text("戻る")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.9))
+                    .edgesIgnoringSafeArea(.all)
+                } else if showLocation {
+                    VStack {
+                        Text("showLocation")
+                        Button(action: {
+                            showLocation = false
+                        }) {
+                            Text("戻る")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.9))
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        )
     }
 
     private func adjustTextEditorHeight() {
