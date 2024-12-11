@@ -15,23 +15,9 @@
 		E26DB51A2D03253100DA3568 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E2D3F27D2D093D0500243E85 /* Exceptions for "NewMemo" folder in "NewMemo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Untitled 2.swift",
-				Untitled.swift,
-			);
-			target = E26DB5042D0319B800DA3568 /* NewMemo */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E26DB5072D0319B800DA3568 /* NewMemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				E2D3F27D2D093D0500243E85 /* Exceptions for "NewMemo" folder in "NewMemo" target */,
-			);
 			path = NewMemo;
 			sourceTree = "<group>";
 		};
