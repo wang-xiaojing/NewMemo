@@ -15,8 +15,7 @@ struct NewView: View {
     @State private var showMic: Bool = false
     @State private var showTagSelector: Bool = false
     @State private var showLocation: Bool = false
-
-    @State private var fontSize: CGFloat = 10
+    @State private var fontSize: CGFloat = 14
     @State private var fontColor: Color = .black
     @State private var backgroundColor: Color = .white
     @State private var textAlignment: TextAlignment = .leading
@@ -52,58 +51,178 @@ struct NewView: View {
                             .foregroundColor(.gray)
                     }
                 }
-                HStack {
-                    Button(action: {
-                        showCamera = true
-                    }) {
-                        Image(systemName: "camera")
-                    }
-                    Button(action: {
-                        showPhoto = true
-                    }) {
-                        Image(systemName: "photo")
-                    }
-                    Button(action: {
-                        showMic = true
-                    }) {
-                        Image(systemName: "music.microphone")
-                    }
-                    Button(action: {
-                        showTagSelector = true
-                    }) {
-                        Image(systemName: "tag")
-                    }
-                    Button(action: {
-                        showLocation = true
-                    }) {
-                        Image(systemName: "globe")
-                    }
-                    Spacer()
-                    Button(action: {
-                        textAlignment = .leading
-                    }) {
-                        Image(systemName: "text.justify.left")
-                    }
-                    Button(action: {
-                        textAlignment = .center
-                    }) {
-                        Image(systemName: "text.aligncenter")
-                    }
-                    Button(action: {
-                        textAlignment = .trailing
-                    }) {
-                        Image(systemName: "text.alignright")
-                    }
-                    Button(action: {
-                        showFontSettings = true
-                    }) {
-                        Image(systemName: "textformat")
+                GeometryReader { geometry in
+                    let buttonCount = 9
+                    let buttonWidth: CGFloat = 20
+                    let spacing: CGFloat = 10 // ボタン間のスペーシング
+                    let totalButtonWidth = (buttonWidth + spacing) * CGFloat(buttonCount)
+                    let availableWidth = geometry.size.width
+                    // FIXME
+                    // ボタンが画面からはみ出す場合に2行に分けて表示する。
+                    // iPhone Xs Max 実機では、上記計算が合わないようです。
+                    if totalButtonWidth > availableWidth {
+                        VStack {
+                            HStack {
+                                Button(action: {
+                                    showCamera = true
+                                }) {
+                                    Image(systemName: "camera")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    showPhoto = true
+                                }) {
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    showMic = true
+                                }) {
+                                    Image(systemName: "music.microphone")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    showTagSelector = true
+                                }) {
+                                    Image(systemName: "tag")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    showLocation = true
+                                }) {
+                                    Image(systemName: "globe")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Spacer()
+                            }
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    textAlignment = .leading
+                                }) {
+                                    Image(systemName: "text.justify.left")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    textAlignment = .center
+                                }) {
+                                    Image(systemName: "text.aligncenter")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    textAlignment = .trailing
+                                }) {
+                                    Image(systemName: "text.alignright")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                                Button(action: {
+                                    showFontSettings = true
+                                }) {
+                                    Image(systemName: "textformat")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: buttonWidth)
+                                }
+                            }
+                        }
+                    } else {
+                        HStack {
+                            Button(action: {
+                                showCamera = true
+                            }) {
+                                Image(systemName: "camera")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                showPhoto = true
+                            }) {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                showMic = true
+                            }) {
+                                Image(systemName: "music.microphone")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                showTagSelector = true
+                            }) {
+                                Image(systemName: "tag")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                showLocation = true
+                            }) {
+                                Image(systemName: "globe")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Spacer()
+                            Button(action: {
+                                textAlignment = .leading
+                            }) {
+                                Image(systemName: "text.justify.left")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                textAlignment = .center
+                            }) {
+                                Image(systemName: "text.aligncenter")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                textAlignment = .trailing
+                            }) {
+                                Image(systemName: "text.alignright")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                            Button(action: {
+                                showFontSettings = true
+                            }) {
+                                Image(systemName: "textformat")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: buttonWidth)
+                            }
+                        }
                     }
                 }
-                .padding()
-                Spacer()
+                // .frame(height: 80) // ボタンの高さを固定
+                // .padding(.top)
             }
-            .padding()
+            Spacer()
             if showFontSettings {
                 VStack {
                     Text("書式設定")
@@ -134,6 +253,7 @@ struct NewView: View {
                 .padding()
             }
         }
+        .padding()
         .onAppear {
             adjustTextEditorHeight()
         }
@@ -165,7 +285,7 @@ struct NewView: View {
                     .edgesIgnoringSafeArea(.all)
                 } else if showMic {
                     VStack {
-                        Text("showMicophon")
+                        Text("showMic")
                         Button(action: {
                             showMic = false
                         }) {
