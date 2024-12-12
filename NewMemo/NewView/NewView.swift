@@ -15,13 +15,17 @@ struct NewView: View {
     @State private var showMic: Bool = false
     @State private var showTagSelector: Bool = false
     @State private var showLocation: Bool = false
-
+    
     @State private var fontSize: CGFloat = 14
     @State private var fontColor: Color = .black
     @State private var backgroundColor: Color = .white
     @State private var textAlignment: TextAlignment = .leading
     @State private var showFontSettings: Bool = false
-
+    
+    @State private var isBold: Bool = false
+    @State private var isItalic: Bool = false
+    @State private var isUnderline: Bool = false
+    
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
@@ -51,29 +55,38 @@ struct NewView: View {
                     }
                 }
                 ZStack(alignment: .topLeading) {
-                    TextEditor(text: $text)
-                        .scrollContentBackground(.hidden)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .frame(height: textEditorHeight)
-                        .font(.system(size: fontSize))
-                        .foregroundColor(fontColor)
-                        .background(backgroundColor)
-                        .multilineTextAlignment(textAlignment)
-                        .background(GeometryReader { geometry in
-                            Color.clear.onAppear {
-                                textEditorHeight = geometry.size.height
-                            }
-                        })
-                        .onChange(of: text) {
-                            adjustTextEditorHeight()
+                    AttributedTextEditor(
+                        text: $text,
+                        fontSize: fontSize,
+                        fontColor: UIColor(fontColor),
+                        isBold: isBold,
+                        isItalic: isItalic,
+                        isUnderline: isUnderline,
+                        textAlignment: convertTextAlignment(textAlignment)
+                    )
+                    // TextEditor(text: $text)
+                    // .scrollContentBackground(.hidden)
+                    //     .font(.system(size: fontSize))
+                    //     .foregroundColor(fontColor)
+                    //     .multilineTextAlignment(textAlignment)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(height: textEditorHeight)
+                    .background(backgroundColor)
+                    .background(GeometryReader { geometry in
+                        Color.clear.onAppear {
+                            textEditorHeight = geometry.size.height
                         }
-                        .onTapGesture {
-                            showFontSettings = false
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppSetting.cornerRadius)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
+                    })
+                    .onChange(of: text) {
+                        adjustTextEditorHeight()
+                    }
+                    .onTapGesture {
+                        showFontSettings = false
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppSetting.cornerRadius)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
                     if text.isEmpty {
                         // プレースホルダとして表示するTextを表示
                         Text(" Enter text here")
@@ -133,6 +146,11 @@ struct NewView: View {
                         Text("背景色")
                         ColorPicker("", selection: $backgroundColor)
                             .labelsHidden()
+                    }
+                    HStack {
+                        Toggle("太字", isOn: $isBold)
+                        Toggle("斜体", isOn: $isItalic)
+                        Toggle("下線", isOn: $isUnderline)
                         Spacer()
                     }
                 }
@@ -220,28 +238,28 @@ struct NewView: View {
             }
         )
     }
-
+    
     private func adjustTextEditorHeight() {
         let lineHeight = calculateLineHeight()
         let maxLines: CGFloat = 10 + 1
         let minLines: CGFloat = 3 + 1
         let minHeight: CGFloat = lineHeight * minLines
         let maxHeight: CGFloat = lineHeight * maxLines
-
+        
         let textHeight = (CGFloat(text.split(separator: "\n").count) + 1) * lineHeight
         textEditorHeight = min(max(textHeight, minHeight), maxHeight)
     }
-
+    
     private func calculateLineHeight() -> CGFloat {
         let font = UIFont.preferredFont(forTextStyle: .body)
         return font.lineHeight
     }
-
+    
     private func currentDateTimeString() -> String {
         let formatter = DateFormatter()
         let languageCode = Locale.current.language.languageCode?.identifier
         let regionCode = Locale.current.region?.identifier
-
+        
         // FIXME
         // 下記言語による表示フォーマットの選択は、未完成です。
         // ここでは、地域コード（言語コードでは無い）でフォーマットを選択しており、誤り発生易い
@@ -249,7 +267,7 @@ struct NewView: View {
         // 地域：日本 & 言語：日本語優先で　languageCode = en, regionCode = "JP" の結果となり。
         debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
         debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
-
+        
         if languageCode == "ja" || regionCode == "JP" {
             formatter.dateFormat = "yyyy年MM月dd日 EEEE HH:mm"
             formatter.locale = Locale(identifier: "ja_JP")
@@ -260,23 +278,37 @@ struct NewView: View {
             formatter.dateFormat = "yyyy/MM/dd EEEE HH:mm"
             formatter.locale = Locale(identifier: "en_US")
         }
-
+        
         return formatter.string(from: Date())
     }
-
+    
     private func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
-
+    
     private func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
             showFontSettings = false
         }
     }
-
+    
     private func removeKeyboardObservers() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     }
+    
+    private func convertTextAlignment(_ alignment: TextAlignment) -> NSTextAlignment {
+        switch alignment {
+        case .leading:
+            return .left
+        case .center:
+            return .center
+        case .trailing:
+            return .right
+        default:
+            return .left
+        }
+    }
+    
 }
 
 #Preview {
