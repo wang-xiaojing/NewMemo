@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct NewView: View {
     @State private var text: String = ""
@@ -25,6 +26,9 @@ struct NewView: View {
     @State private var isBold: Bool = false
     @State private var isItalic: Bool = false
     @State private var isUnderline: Bool = false
+
+    @State private var capturedImage: UIImage? = nil
+    @State private var showImageEditor: Bool = false
     
     var body: some View {
         VStack {
@@ -121,6 +125,16 @@ struct NewView: View {
                     }
                     Spacer()
                 }
+                HStack {
+                    if let image = capturedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                            .padding()
+                        }
+                    Spacer()
+                }
             }
             Spacer()
             if showFontSettings {
@@ -174,19 +188,20 @@ struct NewView: View {
         }
         .overlay(
             Group {
-                if showCamera {
-                    VStack {
-                        Text("showCamera")
-                        Button(action: {
-                            showCamera = false
-                        }) {
-                            Text("戻る")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))
-                    .edgesIgnoringSafeArea(.all)
-                } else if showPhoto {
+                // if showCamera {
+                //     VStack {
+                //         Text("showCamera")
+                //         Button(action: {
+                //             showCamera = false
+                //         }) {
+                //             Text("戻る")
+                //         }
+                //     }
+                //     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                //     .background(Color.white.opacity(0.9))
+                //     .edgesIgnoringSafeArea(.all)
+                // } else
+                if showPhoto {
                     VStack {
                         Text("showPhoto")
                         Button(action: {
@@ -237,6 +252,20 @@ struct NewView: View {
                 }
             }
         )
+        .sheet(isPresented: $showCamera) {
+            ImagePicker(sourceType: .camera) { image in
+            capturedImage = image
+            showImageEditor = true
+            }
+        }
+        .sheet(isPresented: $showImageEditor) {
+            Text("Edit Picture")
+            if let image = capturedImage {
+                ImageEditorView(image: image) { editedImage in
+                    capturedImage = editedImage
+                }
+            }
+        }
     }
     
     private func adjustTextEditorHeight() {
@@ -265,8 +294,8 @@ struct NewView: View {
         // ここでは、地域コード（言語コードでは無い）でフォーマットを選択しており、誤り発生易い
         // iPhone XS Max / iOS 18.1.1 でデバッグしましたが、
         // 地域：日本 & 言語：日本語優先で　languageCode = en, regionCode = "JP" の結果となり。
-        debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
-        debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
+        // debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
+        // debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
         
         if languageCode == "ja" || regionCode == "JP" {
             formatter.dateFormat = "yyyy年MM月dd日 EEEE HH:mm"
@@ -314,4 +343,3 @@ struct NewView: View {
 #Preview {
     NewView()
 }
-
