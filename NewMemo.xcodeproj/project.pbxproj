@@ -20,9 +20,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				NewView/CroppingView.swift,
-				NewView/ImageEditorView_old.swift,
-				NewView/ImageEditorView_old3.swift,
 			);
 			target = E26DB5042D0319B800DA3568 /* NewMemo */;
 		};

@@ -49,7 +49,7 @@ struct ImageEditorView: View {
                     // Crop action will be implemented here
                 }) {
                     Image(systemName: "crop")
-                    Text("Crop")
+                    // Text("Crop")
                 }
             }
         }
