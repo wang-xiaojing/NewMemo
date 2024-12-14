@@ -4,7 +4,6 @@
 //
 //  Created by Xiaojing Wang on 2024/12/14.
 //
-
 import SwiftUI
 import PhotosUI
 
@@ -15,6 +14,7 @@ struct ImageEditorView: View {
     @State private var brightness: Double = 0
     @State private var contrast: Double = 1
     @State private var saturation: Double = 1
+    @State private var showCropView: Bool = false
 
     var body: some View {
         VStack {
@@ -46,14 +46,19 @@ struct ImageEditorView: View {
                     completion(editedImage)
                 }
                 Button(action: {
-                    // Crop action will be implemented here
+                    showCropView = true
                 }) {
                     Image(systemName: "crop")
-                    // Text("Crop")
                 }
             }
         }
         .padding()
+        .sheet(isPresented: $showCropView) {
+            ImageCropView(image: image) { croppedImage in
+                self.image = croppedImage
+                showCropView = false
+            }
+        }
     }
 
     private func applyAdjustments(to image: UIImage) -> UIImage {
@@ -74,3 +79,82 @@ struct ImageEditorView: View {
     }
 }
 
+struct ImageCropView: View {
+    @State var image: UIImage
+    var completion: (UIImage) -> Void
+
+    @State private var cropRect: CGRect = .zero
+    @State private var startLocation: CGPoint = .zero
+    @State private var isDragging: Bool = false
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack {
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .overlay(
+                            Rectangle()
+                                .stroke(Color.red, lineWidth: 2)
+                                .frame(width: cropRect.width / 2, height: cropRect.height / 2)
+                                .position(x: cropRect.midX, y: cropRect.midY)
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            if isDragging {
+                                                let newWidth = max(20, cropRect.width + value.translation.width)
+                                                let newHeight = max(20, cropRect.height + value.translation.height)
+                                                cropRect.size = CGSize(width: newWidth, height: newHeight)
+                                            } else {
+                                                cropRect.origin = CGPoint(
+                                                    x: min(max(0, startLocation.x + value.translation.width), geometry.size.width - cropRect.width),
+                                                    y: min(max(0, startLocation.y + value.translation.height), geometry.size.height - cropRect.height)
+                                                )
+                                            }
+                                        }
+                                        .onEnded { _ in
+                                            isDragging = false
+                                        }
+                                )
+                                .onTapGesture {
+                                    isDragging.toggle()
+                                }
+                        )
+                        .onAppear {
+                            let imageSize = image.size
+                            let scale = min(geometry.size.width / imageSize.width, geometry.size.height / imageSize.height)
+                            let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
+                            cropRect = CGRect(x: (geometry.size.width - displaySize.width) / 2, y: (geometry.size.height - displaySize.height) / 2, width: displaySize.width, height: displaySize.height)
+                        }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black.opacity(0.5))
+                .edgesIgnoringSafeArea(.all)
+
+                HStack {
+                    Button("戻り") {
+                        completion(image)
+                    }
+                    Spacer()
+                    Button("決定") {
+                        let croppedImage = cropImage(image: image, toRect: cropRect, viewSize: geometry.size)
+                        completion(croppedImage)
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+
+    private func cropImage(image: UIImage, toRect cropRect: CGRect, viewSize: CGSize) -> UIImage {
+        let scale = image.size.width / viewSize.width
+        let scaledCropRect = CGRect(x: cropRect.origin.x * scale, y: cropRect.origin.y * scale, width: cropRect.width * scale, height: cropRect.height * scale)
+        
+        if let cgImage = image.cgImage?.cropping(to: scaledCropRect) {
+            return UIImage(cgImage: cgImage)
+        }
+        
+        return image
+    }
+}
