@@ -127,6 +127,21 @@ struct ImageCropView: View {
                             let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
                             cropRect = CGRect(x: (geometry.size.width - displaySize.width) / 2, y: (geometry.size.height - displaySize.height) / 2, width: displaySize.width, height: displaySize.height)
                         }
+                    
+                    // トリミング枠の各角に赤色の正方形を配置
+                    ForEach([Corner.topLeft, Corner.topRight, Corner.bottomLeft, Corner.bottomRight], id: \.self) { corner in
+                        Rectangle()
+                            .fill(Color.red)
+                            .frame(width: 20, height: 20)
+                            .position(position(for: corner, in: cropRect))
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        let newRect = resizeRect(corner: corner, value: value, cropRect: cropRect, geometry: geometry)
+                                        cropRect = newRect
+                                    }
+                            )
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.black.opacity(0.5))
@@ -147,6 +162,46 @@ struct ImageCropView: View {
         }
     }
 
+    private func position(for corner: Corner, in cropRect: CGRect) -> CGPoint {
+        switch corner {
+        case .topLeft:
+            return CGPoint(x: cropRect.minX, y: cropRect.minY)
+        case .topRight:
+            return CGPoint(x: cropRect.maxX, y: cropRect.minY)
+        case .bottomLeft:
+            return CGPoint(x: cropRect.minX, y: cropRect.maxY)
+        case .bottomRight:
+            return CGPoint(x: cropRect.maxX, y: cropRect.maxY)
+        }
+    }
+
+    private func resizeRect(corner: Corner, value: DragGesture.Value, cropRect: CGRect, geometry: GeometryProxy) -> CGRect {
+        var newRect = cropRect
+        let newX = max(0, min(geometry.size.width, value.location.x))
+        let newY = max(0, min(geometry.size.height, value.location.y))
+
+        switch corner {
+        case .topLeft:
+            newRect.origin.x = newX
+            newRect.origin.y = newY
+            newRect.size.width = cropRect.maxX - newX
+            newRect.size.height = cropRect.maxY - newY
+        case .topRight:
+            newRect.origin.y = newY
+            newRect.size.width = newX - cropRect.minX
+            newRect.size.height = cropRect.maxY - newY
+        case .bottomLeft:
+            newRect.origin.x = newX
+            newRect.size.width = cropRect.maxX - newX
+            newRect.size.height = newY - cropRect.minY
+        case .bottomRight:
+            newRect.size.width = newX - cropRect.minX
+            newRect.size.height = newY - cropRect.minY
+        }
+
+        return newRect
+    }
+
     private func cropImage(image: UIImage, toRect cropRect: CGRect, viewSize: CGSize) -> UIImage {
         let scale = image.size.width / viewSize.width
         let scaledCropRect = CGRect(x: cropRect.origin.x * scale, y: cropRect.origin.y * scale, width: cropRect.width * scale, height: cropRect.height * scale)
@@ -157,4 +212,8 @@ struct ImageCropView: View {
         
         return image
     }
+}
+
+enum Corner {
+    case topLeft, topRight, bottomLeft, bottomRight
 }
