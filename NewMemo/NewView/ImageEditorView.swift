@@ -105,7 +105,7 @@ struct ImageCropView: View {
                                             if isDragging {
                                                 let newWidth = max(20, cropRect.width + value.translation.width)
                                                 let newHeight = max(20, cropRect.height + value.translation.height)
-                                                cropRect.size = CGSize(width: newWidth, height: newHeight)
+                                                cropRect.size = CGSize(width: min(newWidth, geometry.size.width - cropRect.origin.x), height: min(newHeight, geometry.size.height - cropRect.origin.y))
                                             } else {
                                                 cropRect.origin = CGPoint(
                                                     x: min(max(0, startLocation.x + value.translation.width), geometry.size.width - cropRect.width),
@@ -117,9 +117,6 @@ struct ImageCropView: View {
                                             isDragging = false
                                         }
                                 )
-                                .onTapGesture {
-                                    isDragging.toggle()
-                                }
 //                        )
                         .onAppear {
                             let imageSize = image.size
@@ -127,15 +124,14 @@ struct ImageCropView: View {
                             let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
                             let cropWidth = displaySize.width / 2
                             let cropHeight = displaySize.height / 2
-                            let xOffset = (geometry.size.width - displaySize.width) / 2
-                            let yOffset = (geometry.size.height - displaySize.height) / 2
                             cropRect = CGRect(
-                                x: xOffset + (displaySize.width - cropWidth) / 2,
-                                y: yOffset + (displaySize.height - cropHeight) / 2,
+                                x: (geometry.size.width - cropWidth) / 2,
+                                y: (geometry.size.height - cropHeight) / 2,
                                 width: cropWidth,
                                 height: cropHeight
                             )
                         }
+                    
                     // トリミング枠の各角に赤色の正方形を配置
                     ForEach([Corner.topLeft, Corner.topRight, Corner.bottomLeft, Corner.bottomRight], id: \.self) { corner in
                         Rectangle()
@@ -185,8 +181,17 @@ struct ImageCropView: View {
 
     private func resizeRect(corner: Corner, value: DragGesture.Value, cropRect: CGRect, geometry: GeometryProxy) -> CGRect {
         var newRect = cropRect
-        let newX = max(0, min(geometry.size.width, value.location.x))
-        let newY = max(0, min(geometry.size.height, value.location.y))
+
+        let imageSize = image.size
+        let scale = min(geometry.size.width / imageSize.width, geometry.size.height / imageSize.height)
+        let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
+        let xOffset = (geometry.size.width - displaySize.width) / 2
+        let yOffset = (geometry.size.height - displaySize.height) / 2
+
+        // let newX = max(0, min(geometry.size.width, value.location.x))
+        // let newY = max(0, min(geometry.size.height, value.location.y))
+        let newX = max(xOffset, min(xOffset + displaySize.width, value.location.x))
+        let newY = max(yOffset, min(yOffset + displaySize.height, value.location.y))
 
         switch corner {
         case .topLeft:
@@ -206,6 +211,13 @@ struct ImageCropView: View {
             newRect.size.width = newX - cropRect.minX
             newRect.size.height = newY - cropRect.minY
         }
+
+        // トリミング枠が画像表示範囲内に収まるように調整
+
+        // newRect.origin.x = max(xOffset, min(newRect.origin.x, xOffset + displaySize.width - newRect.width))
+        // newRect.origin.y = max(yOffset, min(newRect.origin.y, yOffset + displaySize.height - newRect.height))
+        // newRect.size.width = min(newRect.width, xOffset + displaySize.width - newRect.origin.x)
+        // newRect.size.height = min(newRect.height, yOffset + displaySize.height - newRect.origin.y)
 
         return newRect
     }
