@@ -94,30 +94,28 @@ struct ImageCropView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-//                        .overlay(
-                            Rectangle()
-                                .stroke(Color.red, lineWidth: 2)
-                                .frame(width: cropRect.width, height: cropRect.height)
-                                .position(x: cropRect.midX, y: cropRect.midY)
-                                .gesture(
-                                    DragGesture()
-                                        .onChanged { value in
-                                            if isDragging {
-                                                let newWidth = max(20, cropRect.width + value.translation.width)
-                                                let newHeight = max(20, cropRect.height + value.translation.height)
-                                                cropRect.size = CGSize(width: min(newWidth, geometry.size.width - cropRect.origin.x), height: min(newHeight, geometry.size.height - cropRect.origin.y))
-                                            } else {
-                                                cropRect.origin = CGPoint(
-                                                    x: min(max(0, startLocation.x + value.translation.width), geometry.size.width - cropRect.width),
-                                                    y: min(max(0, startLocation.y + value.translation.height), geometry.size.height - cropRect.height)
-                                                )
-                                            }
-                                        }
-                                        .onEnded { _ in
-                                            isDragging = false
-                                        }
-                                )
-//                        )
+                    Rectangle()
+                        .stroke(Color.red, lineWidth: 2)
+                        .frame(width: cropRect.width, height: cropRect.height)
+                        .position(x: cropRect.midX, y: cropRect.midY)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    if isDragging {
+                                        let newWidth = max(20, cropRect.width + value.translation.width)
+                                        let newHeight = max(20, cropRect.height + value.translation.height)
+                                        cropRect.size = CGSize(width: min(newWidth, geometry.size.width - cropRect.origin.x), height: min(newHeight, geometry.size.height - cropRect.origin.y))
+                                    } else {
+                                        cropRect.origin = CGPoint(
+                                            x: min(max(0, startLocation.x + value.translation.width), geometry.size.width - cropRect.width),
+                                            y: min(max(0, startLocation.y + value.translation.height), geometry.size.height - cropRect.height)
+                                        )
+                                    }
+                                }
+                                .onEnded { _ in
+                                    isDragging = false
+                                }
+                        )
                         .onAppear {
                             let imageSize = image.size
                             let scale = min(geometry.size.width / imageSize.width, geometry.size.height / imageSize.height)
@@ -188,6 +186,7 @@ struct ImageCropView: View {
         let xOffset = (geometry.size.width - displaySize.width) / 2
         let yOffset = (geometry.size.height - displaySize.height) / 2
 
+        // FIXME: トリミング枠が画像表示範囲内に収まるように調整、未完成
         // let newX = max(0, min(geometry.size.width, value.location.x))
         // let newY = max(0, min(geometry.size.height, value.location.y))
         let newX = max(xOffset, min(xOffset + displaySize.width, value.location.x))
@@ -223,7 +222,7 @@ struct ImageCropView: View {
     }
 
     private func cropImage(image: UIImage, toRect cropRect: CGRect, viewSize: CGSize) -> UIImage {
-        let scale = image.size.width / viewSize.width
+        let scale = min(image.size.width / viewSize.width, image.size.height / viewSize.height)
         let scaledCropRect = CGRect(x: cropRect.origin.x * scale, y: cropRect.origin.y * scale, width: cropRect.width * scale, height: cropRect.height * scale)
         
         if let cgImage = image.cgImage?.cropping(to: scaledCropRect) {

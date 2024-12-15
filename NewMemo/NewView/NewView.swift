@@ -254,8 +254,10 @@ struct NewView: View {
         )
         .sheet(isPresented: $showCamera) {
             ImagePicker(sourceType: .camera) { image in
-            capturedImage = image
-            showImageEditor = true
+                capturedImage = image
+                // FIXME: 現時点カメラで撮った画像そのまま採用する。
+                // FIXME: 画像編集処理必要な場合、下記を開放
+                // showImageEditor = true
             }
         }
         .sheet(isPresented: $showImageEditor) {
@@ -289,13 +291,12 @@ struct NewView: View {
         let languageCode = Locale.current.language.languageCode?.identifier
         let regionCode = Locale.current.region?.identifier
         
-        // FIXME
-        // 下記言語による表示フォーマットの選択は、未完成です。
-        // ここでは、地域コード（言語コードでは無い）でフォーマットを選択しており、誤り発生易い
-        // iPhone XS Max / iOS 18.1.1 でデバッグしましたが、
-        // 地域：日本 & 言語：日本語優先で　languageCode = en, regionCode = "JP" の結果となり。
-        // debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
-        // debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
+        // FIXME: 下記言語による表示フォーマットの選択は、未完成です。
+        // FIXME: ここでは、地域コード（言語コードでは無い）でフォーマットを選択しており、誤り発生易い
+        // FIXME: iPhone XS Max / iOS 18.1.1 でデバッグしましたが、
+        // FIXME: 地域：日本 & 言語：日本語優先で　languageCode = en, regionCode = "JP" の結果となり。
+        // FIXME: debugPrint("languageCode:\(languageCode ?? "?")")   // "languageCode:en"
+        // FIXME: debugPrint("regionCode:\(regionCode ?? "?")")       // "regionCode:JP"
         
         if languageCode == "ja" || regionCode == "JP" {
             formatter.dateFormat = "yyyy年MM月dd日 EEEE HH:mm"
