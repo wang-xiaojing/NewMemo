@@ -94,10 +94,10 @@ struct ImageCropView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .overlay(
+//                        .overlay(
                             Rectangle()
                                 .stroke(Color.red, lineWidth: 2)
-                                .frame(width: cropRect.width / 2, height: cropRect.height / 2)
+                                .frame(width: cropRect.width, height: cropRect.height)
                                 .position(x: cropRect.midX, y: cropRect.midY)
                                 .gesture(
                                     DragGesture()
@@ -120,14 +120,22 @@ struct ImageCropView: View {
                                 .onTapGesture {
                                     isDragging.toggle()
                                 }
-                        )
+//                        )
                         .onAppear {
                             let imageSize = image.size
                             let scale = min(geometry.size.width / imageSize.width, geometry.size.height / imageSize.height)
                             let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
-                            cropRect = CGRect(x: (geometry.size.width - displaySize.width) / 2, y: (geometry.size.height - displaySize.height) / 2, width: displaySize.width, height: displaySize.height)
+                            let cropWidth = displaySize.width / 2
+                            let cropHeight = displaySize.height / 2
+                            let xOffset = (geometry.size.width - displaySize.width) / 2
+                            let yOffset = (geometry.size.height - displaySize.height) / 2
+                            cropRect = CGRect(
+                                x: xOffset + (displaySize.width - cropWidth) / 2,
+                                y: yOffset + (displaySize.height - cropHeight) / 2,
+                                width: cropWidth,
+                                height: cropHeight
+                            )
                         }
-                    
                     // トリミング枠の各角に赤色の正方形を配置
                     ForEach([Corner.topLeft, Corner.topRight, Corner.bottomLeft, Corner.bottomRight], id: \.self) { corner in
                         Rectangle()
