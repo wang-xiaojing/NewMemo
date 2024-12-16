@@ -188,19 +188,6 @@ struct NewView: View {
         }
         .overlay(
             Group {
-                // if showCamera {
-                //     VStack {
-                //         Text("showCamera")
-                //         Button(action: {
-                //             showCamera = false
-                //         }) {
-                //             Text("戻る")
-                //         }
-                //     }
-                //     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                //     .background(Color.white.opacity(0.9))
-                //     .edgesIgnoringSafeArea(.all)
-                // } else
                 if showPhoto {
                     VStack {
                         Text("showPhoto")
@@ -260,14 +247,17 @@ struct NewView: View {
                 // showImageEditor = true
             }
         }
-        .sheet(isPresented: $showImageEditor) {
-            Text("Edit Picture")
-            if let image = capturedImage {
-                ImageEditorView(image: image) { editedImage in
-                    capturedImage = editedImage
-                }
-            }
-        }
+        // FIXME: 現時点カメラで撮った画像そのまま採用する。
+        // FIXME: 画像編集処理必要な場合、下記を開放
+        // showImageEditor = true
+        // .sheet(isPresented: $showImageEditor) {
+        //     Text("Edit Picture")
+        //     if let image = capturedImage {
+        //         ImageEditorView(image: image) { editedImage in
+        //             capturedImage = editedImage
+        //         }
+        //     }
+        // }
     }
     
     private func adjustTextEditorHeight() {
