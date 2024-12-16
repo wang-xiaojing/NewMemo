@@ -174,18 +174,21 @@ struct NewView: View {
                             Text("閉じる")
                         }
                     }
+                    Divider()
                     HStack {
                         Text("フォントサイズ")
                         Slider(value: $fontSize, in: 10...30, step: 1)  // フォントサイズを調整
                     }
                     HStack {
+                        // フォントカラーのColorPicker
                         Text("フォントカラー")
                         ColorPicker("", selection: $fontColor)
                             .labelsHidden()  // ラベルを非表示
                         Spacer()
+                        // 背景色のColorPicker
                         Text("背景色")
                         ColorPicker("", selection: $backgroundColor)
-                            .labelsHidden()
+                            .labelsHidden()  // ラベルを非表示
                     }
                     HStack {
                         Toggle("太字", isOn: $isBold)  // 太字設定のトグル
