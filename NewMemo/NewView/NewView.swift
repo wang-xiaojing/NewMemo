@@ -33,6 +33,17 @@ struct NewView: View {
     @State private var selectedImageIndex: Int? = nil  // 削除対象の画像インデックス
     @State private var showEditMenu: Bool = false  // 編集メニューを表示するフラグを追加
     @State private var showSaveConfirmation: Bool = false  // 写真へ保存の確認アラートを表示するフラグを追加
+    @State private var editAction: EditAction? = nil  // 選択された編集アクション
+
+    enum EditAction: Identifiable {
+        case delete
+        case save
+        case none
+
+        var id: Int {
+            hashValue
+        }
+    }
     
     var body: some View {
         VStack {  // 全体を縦にレイアウト
@@ -147,38 +158,47 @@ struct NewView: View {
                                 }
                             }
                         }
-                        .alert(isPresented: $showDeleteConfirmation) {  // 削除確認アラートを表示
-                            Alert(
-                                title: Text("画像の削除"),
-                                message: Text("この画像を削除しますか？"),
-                                primaryButton: .destructive(Text("削除")) {
-                                    if let index = selectedImageIndex {
-                                        capturedImages.remove(at: index)  // 画像を配列から削除
+                        .confirmationDialog("", isPresented: $showEditMenu, presenting: selectedImageIndex) { index in
+                            // 編集メニューを表示
+                            Button("写真へ保存") {
+                                editAction = .save  // 保存アクションを設定
+                            }
+                            Button("削除", role: .destructive) {
+                                editAction = .delete  // 削除アクションを設定
+                            }
+                            Button("キャンセル", role: .cancel) {
+                                editAction = EditAction.none  // 何もしない
+                            }
+                        }
+                        .sheet(item: $editAction) { action in
+                            // 選択されたアクションに応じて処理を実行
+                            switch action {
+                            case .save:
+                                // 写真へ保存の確認ダイアログを表示
+                                ConfirmationDialog(
+                                    title: "写真へ保存",
+                                    message: "この画像を写真アプリに保存しますか？",
+                                    confirmTitle: "保存",
+                                    confirmAction: {
+                                        saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
                                     }
-                                },
-                                secondaryButton: .cancel(Text("キャンセル"))
-                            )
-                        }
-                        .alert(isPresented: $showSaveConfirmation) {  // 写真へ保存の確認アラートを追加
-                            Alert(
-                                title: Text("写真へ保存"),
-                                message: Text("この画像を写真アプリに保存しますか？"),
-                                primaryButton: .default(Text("保存")) {
-                                    saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
-                                },
-                                secondaryButton: .cancel(Text("キャンセル"))
-                            )
-                        }
-                        .actionSheet(isPresented: $showEditMenu) {  // アクションシートを表示するmodifierを追加
-                            ActionSheet(title: Text("編集"), buttons: [
-                                .default(Text("写真へ保存")) {
-                                    showSaveConfirmation = true  // 写真へ保存の確認アラートを表示
-                                },
-                                .destructive(Text("削除")) {
-                                    showDeleteConfirmation = true  // 削除の確認アラートを表示
-                                },
-                                .cancel(Text("戻る"))  // 戻るボタン
-                            ])
+                                )
+                            case .delete:
+                                // 削除の確認ダイアログを表示
+                                ConfirmationDialog(
+                                    title: "画像の削除",
+                                    message: "この画像を削除しますか？",
+                                    confirmTitle: "削除",
+                                    confirmAction: {
+                                        if let index = selectedImageIndex {
+                                            capturedImages.remove(at: index)  // 画像を配列から削除
+                                        }
+                                    },
+                                    isDestructive: true
+                                )
+                            case .none:
+                                EmptyView()  // 何もしない
+                            }
                         }
                     }
                     Spacer()  // 他のビューとの間隔を確保
@@ -384,6 +404,32 @@ struct NewView: View {
             let image = capturedImages[index]
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)  // 写真アプリに画像を保存
         }
+    }
+}
+
+// ConfirmationDialogビューを作成
+struct ConfirmationDialog: View {
+    let title: String
+    let message: String
+    let confirmTitle: String
+    let confirmAction: () -> Void
+    var isDestructive: Bool = false
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text(message)
+            HStack {
+                Button("キャンセル") {
+                    // 何もしない
+                }
+                Spacer()
+                Button(confirmTitle) {
+                    confirmAction()
+                }
+                .foregroundColor(isDestructive ? .red : .blue)
+            }
+        }
+        .padding()
     }
 }
 
