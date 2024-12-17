@@ -31,6 +31,8 @@ struct NewView: View {
     @State private var showImageEditor: Bool = false  // 画像編集画面の表示フラグ
     @State private var showDeleteConfirmation: Bool = false  // 削除確認アラートの表示フラグ
     @State private var selectedImageIndex: Int? = nil  // 削除対象の画像インデックス
+    @State private var showEditMenu: Bool = false  // 編集メニューを表示するフラグを追加
+    @State private var showSaveConfirmation: Bool = false  // 写真へ保存の確認アラートを表示するフラグを追加
     
     var body: some View {
         VStack {  // 全体を縦にレイアウト
@@ -134,12 +136,11 @@ struct NewView: View {
                                             .frame(height: 100)
                                             .padding(.trailing, 8)
                                         Button(action: {
-                                            // 'x'ボタンが押されたときの処理
+                                            showEditMenu = true  // 編集メニューを表示するフラグを有効化
                                             selectedImageIndex = index  // 選択された画像のインデックスを保存
-                                            showDeleteConfirmation = true  // 削除確認アラートを表示
                                         }) {
-                                            Image(systemName: "xmark.circle.fill")  // 'x'のアイコン
-                                                .foregroundColor(.red)
+                                            Image(systemName: "pencil")  // アイコンを'編集'（鉛筆）に変更
+                                                .foregroundColor(.blue)
                                                 .padding(4)
                                         }
                                     }
@@ -157,6 +158,27 @@ struct NewView: View {
                                 },
                                 secondaryButton: .cancel(Text("キャンセル"))
                             )
+                        }
+                        .alert(isPresented: $showSaveConfirmation) {  // 写真へ保存の確認アラートを追加
+                            Alert(
+                                title: Text("写真へ保存"),
+                                message: Text("この画像を写真アプリに保存しますか？"),
+                                primaryButton: .default(Text("保存")) {
+                                    saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
+                                },
+                                secondaryButton: .cancel(Text("キャンセル"))
+                            )
+                        }
+                        .actionSheet(isPresented: $showEditMenu) {  // アクションシートを表示するmodifierを追加
+                            ActionSheet(title: Text("編集"), buttons: [
+                                .default(Text("写真へ保存")) {
+                                    showSaveConfirmation = true  // 写真へ保存の確認アラートを表示
+                                },
+                                .destructive(Text("削除")) {
+                                    showDeleteConfirmation = true  // 削除の確認アラートを表示
+                                },
+                                .cancel(Text("戻る"))  // 戻るボタン
+                            ])
                         }
                     }
                     Spacer()  // 他のビューとの間隔を確保
@@ -357,6 +379,12 @@ struct NewView: View {
         }
     }
     
+    private func saveImageToPhotos() {
+        if let index = selectedImageIndex {
+            let image = capturedImages[index]
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)  // 写真アプリに画像を保存
+        }
+    }
 }
 
 // プレビューを表示するためのコード
