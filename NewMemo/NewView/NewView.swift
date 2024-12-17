@@ -7,6 +7,7 @@
 
 import SwiftUI  // SwiftUIフレームワークをインポート
 import PhotosUI  // 写真関連のフレームワークをインポート
+import Photos  // 写真関連のフレームワークをインポート
 
 struct NewView: View {
     @State private var text: String = ""  // ユーザーが入力するテキストを保持
@@ -34,6 +35,10 @@ struct NewView: View {
     @State private var showEditMenu: Bool = false  // 編集メニューを表示するフラグを追加
     @State private var showSaveConfirmation: Bool = false  // 写真へ保存の確認アラートを表示するフラグを追加
     @State private var editAction: EditAction? = nil  // 選択された編集アクション
+
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlertFlag: Bool = false
 
     enum EditAction: Identifiable {
         case delete
@@ -174,7 +179,7 @@ struct NewView: View {
                             // 選択されたアクションに応じて処理を実行
                             switch action {
                             case .save:
-                                // 写真へ保存の確認ダイアログを表示
+                                //  を表示
                                 ConfirmationDialog(
                                     title: "写真へ保存",
                                     message: "この画像を写真アプリに保存しますか？",
@@ -328,6 +333,9 @@ struct NewView: View {
         //         }
         //     }
         // }
+        .alert(isPresented: $showAlertFlag) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
     
     private func adjustTextEditorHeight() {
@@ -392,23 +400,64 @@ struct NewView: View {
             return .left  // 左揃え
         case .center:
             return .center  // 中央揃え
-        case .trailing:
-            return .right  // 右揃え
+        // case .trailing:
+        //     return .right  // 右揃え
         default:
-            return .left  // デフォルトは左揃え
+            return .right  // デフォルトは左揃え
         }
     }
     
     private func saveImageToPhotos() {
         if let index = selectedImageIndex {
             let image = capturedImages[index]
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)  // 写真アプリに画像を保存
+            PHPhotoLibrary.requestAuthorization { status in
+                if status == .authorized {
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetChangeRequest.creationRequestForAsset(from: image)
+                    }, completionHandler: { success, error in
+                        DispatchQueue.main.async {
+                            if success {
+                                // 保存成功時の処理
+                                showAlert(title: "成功", message: "画像を写真に保存しました")
+                            } else {
+                                // 保存失敗時の処理
+                                showAlert(title: "エラー", message: "画像の保存に失敗しました: \(error?.localizedDescription ?? "不明なエラー")")
+                            }
+                        }
+                    })
+                } else {
+                    DispatchQueue.main.async {
+                        // 許可が得られなかった場合の処理
+                        showAlert(title: "エラー", message: "写真へのアクセスが許可されていません")
+                    }
+                }
+            }
         }
+    }
+    // このメソッドを削除してください
+    // @objc private func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+    //     DispatchQueue.main.async {
+    //         if let error = error {
+    //             // エラー時のアラート表示
+    //             showAlert(title: "エラー", message: "画像の保存に失敗しました: \(error.localizedDescription)")
+    //         } else {
+    //             // 成功時のアラート表示
+    //             showAlert(title: "成功", message: "画像を写真に保存しました")
+    //         }
+    //     }
+    // }
+
+    private func showAlert(title: String, message: String) {
+        alertTitle = title
+        alertMessage = message
+        showAlertFlag = true
     }
 }
 
 // ConfirmationDialogビューを作成
 struct ConfirmationDialog: View {
+    @Environment(\.presentationMode) var presentationMode  // シートの表示状態を管理
+
     let title: String
     let message: String
     let confirmTitle: String
@@ -417,14 +466,17 @@ struct ConfirmationDialog: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            Text(title)
+                .font(.headline)
             Text(message)
             HStack {
                 Button("キャンセル") {
-                    // 何もしない
+                    presentationMode.wrappedValue.dismiss()  // シートを閉じる
                 }
                 Spacer()
                 Button(confirmTitle) {
                     confirmAction()
+                    presentationMode.wrappedValue.dismiss()  // アクション後にシートを閉じる
                 }
                 .foregroundColor(isDestructive ? .red : .blue)
             }
