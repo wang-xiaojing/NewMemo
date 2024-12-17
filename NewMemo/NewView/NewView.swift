@@ -188,6 +188,8 @@ struct NewView: View {
                                         saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
                                     }
                                 )
+                                .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
+                                // .interactiveDismissDisabled(true)        // 画面が消えないように
                             case .delete:
                                 // 削除の確認ダイアログを表示
                                 ConfirmationDialog(
@@ -201,8 +203,11 @@ struct NewView: View {
                                     },
                                     isDestructive: true
                                 )
-                            case .none:
+                                .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
+                                // .interactiveDismissDisabled(true)        // 画面が消えないように
+                             case .none:
                                 EmptyView()  // 何もしない
+                                    .presentationDetents([.fraction(0)])     // 画面高さの 1/4
                             }
                         }
                     }
@@ -434,18 +439,6 @@ struct NewView: View {
             }
         }
     }
-    // このメソッドを削除してください
-    // @objc private func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-    //     DispatchQueue.main.async {
-    //         if let error = error {
-    //             // エラー時のアラート表示
-    //             showAlert(title: "エラー", message: "画像の保存に失敗しました: \(error.localizedDescription)")
-    //         } else {
-    //             // 成功時のアラート表示
-    //             showAlert(title: "成功", message: "画像を写真に保存しました")
-    //         }
-    //     }
-    // }
 
     private func showAlert(title: String, message: String) {
         alertTitle = title
