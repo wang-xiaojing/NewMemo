@@ -43,7 +43,7 @@ struct NewView: View {
     enum EditAction: Identifiable {
         case delete
         case save
-        case none
+        // case none
 
         var id: Int {
             hashValue
@@ -171,9 +171,9 @@ struct NewView: View {
                             Button("削除", role: .destructive) {
                                 editAction = .delete  // 削除アクションを設定
                             }
-                            Button("キャンセル", role: .cancel) {
-                                editAction = EditAction.none  // 何もしない
-                            }
+                            // Button("キャンセル", role: .cancel) {
+                            //     editAction = EditAction.none  // 何もしない
+                            // }
                         }
                         .sheet(item: $editAction) { action in
                             // 選択されたアクションに応じて処理を実行
@@ -205,9 +205,9 @@ struct NewView: View {
                                 )
                                 .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
                                 // .interactiveDismissDisabled(true)        // 画面が消えないように
-                             case .none:
-                                EmptyView()  // 何もしない
-                                    .presentationDetents([.fraction(0)])     // 画面高さの 1/4
+                             // case .none:
+                             //    EmptyView()  // 何もしない
+                             //        .presentationDetents([.fraction(0)])     // 画面高さの 1/4
                             }
                         }
                     }
