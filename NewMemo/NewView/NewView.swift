@@ -50,289 +50,293 @@ struct NewView: View {
     }
     
     var body: some View {
-        VStack {  // 全体を縦にレイアウト
-            VStack(alignment: .leading) {  // 上部のコンテンツを左揃えで縦に配置
-                Text(currentDateTimeString())  // 現在の日時を表示
-                HStack {  // テキストの配置やフォント設定ボタンを横に並べる
-                    Spacer()  // 左側にスペースを追加
-                    Button(action: {
-                        textAlignment = .leading  // テキストを左揃えに設定
-                    }) {
-                        Image(systemName: "text.justify.left")  // 左揃えのアイコン
-                    }
-                    Button(action: {
-                        textAlignment = .center  // テキストを中央揃えに設定
-                    }) {
-                        Image(systemName: "text.aligncenter")  // 中央揃えのアイコン
-                    }
-                    Button(action: {
-                        textAlignment = .trailing  // テキストを右揃えに設定
-                    }) {
-                        Image(systemName: "text.alignright")  // 右揃えのアイコン
-                    }
-                    Button(action: {
-                        showFontSettings = true  // フォント設定画面を表示
-                        hideKeyboard()  // キーボードを非表示に
-                    }) {
-                        Image(systemName: "textformat")  // フォント設定のアイコン
-                    }
-                }
-                ZStack(alignment: .topLeading) {  // テキストエディタとプレースホルダを重ねて配置
-                    AttributedTextEditor(
-                        text: $text,  // テキストのバインディング
-                        fontSize: fontSize,  // フォントサイズ
-                        fontColor: UIColor(fontColor),  // フォントカラー（UIColor型）
-                        isBold: isBold,  // 太字設定
-                        isItalic: isItalic,  // 斜体設定
-                        isUnderline: isUnderline,  // 下線設定
-                        textAlignment: convertTextAlignment(textAlignment)  // テキストのアライメント変換
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)  // 最大サイズに設定
-                    .frame(height: textEditorHeight)  // テキストエディタの高さを設定
-                    .background(backgroundColor)  // 背景色を設定
-                    .background(GeometryReader { geometry in  // エディタのサイズを取得
-                        Color.clear.onAppear {
-                            textEditorHeight = geometry.size.height  // 高さを更新
+        GeometryReader { geometry in
+            VStack {  // 全体を縦にレイアウト
+                VStack(alignment: .leading) {  // 上部のコンテンツを左揃えで縦に配置
+                    Text(currentDateTimeString())  // 現在の日時を表示
+                    HStack {  // テキストの配置やフォント設定ボタンを横に並べる
+                        Spacer()  // 左側にスペースを追加
+                        Button(action: {
+                            textAlignment = .leading  // テキストを左揃えに設定
+                        }) {
+                            Image(systemName: "text.justify.left")  // 左揃えのアイコン
                         }
-                    })
-                    .onChange(of: text) {
-                        adjustTextEditorHeight()  // テキストの高さを調整
+                        Button(action: {
+                            textAlignment = .center  // テキストを中央揃えに設定
+                        }) {
+                            Image(systemName: "text.aligncenter")  // 中央揃えのアイコン
+                        }
+                        Button(action: {
+                            textAlignment = .trailing  // テキストを右揃えに設定
+                        }) {
+                            Image(systemName: "text.alignright")  // 右揃えのアイコン
+                        }
+                        Button(action: {
+                            showFontSettings = true  // フォント設定画面を表示
+                            hideKeyboard()  // キーボードを非表示に
+                        }) {
+                            Image(systemName: "textformat")  // フォント設定のアイコン
+                        }
                     }
-                    .onTapGesture {
-                        showFontSettings = false  // フォント設定画面を非表示に
+                    ZStack(alignment: .topLeading) {  // テキストエディタとプレースホルダを重ねて配置
+                        AttributedTextEditor(
+                            text: $text,  // テキストのバインディング
+                            fontSize: fontSize,  // フォントサイズ
+                            fontColor: UIColor(fontColor),  // フォントカラー（UIColor型）
+                            isBold: isBold,  // 太字設定
+                            isItalic: isItalic,  // 斜体設定
+                            isUnderline: isUnderline,  // 下線設定
+                            textAlignment: convertTextAlignment(textAlignment)  // テキストのアライメント変換
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)  // 最大サイズに設定
+                        .frame(height: textEditorHeight)  // テキストエディタの高さを設定
+                        .background(backgroundColor)  // 背景色を設定
+                        .background(GeometryReader { geometry in  // エディタのサイズを取得
+                            Color.clear.onAppear {
+                                textEditorHeight = geometry.size.height  // 高さを更新
+                            }
+                        })
+                        .onChange(of: text) {
+                            adjustTextEditorHeight()  // テキストの高さを調整
+                        }
+                        .onTapGesture {
+                            showFontSettings = false  // フォント設定画面を非表示に
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppSetting.cornerRadius)  // 角丸の長方形をオーバーレイ
+                                .stroke(Color.gray, lineWidth: 1)  // 枠線を描画
+                        )
+                        if text.isEmpty {
+                            // プレースホルダとして表示するTextを表示
+                            Text(" Enter text here")
+                                .foregroundColor(.gray)  // プレースホルダの文字色をグレーに
+                        }
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppSetting.cornerRadius)  // 角丸の長方形をオーバーレイ
-                            .stroke(Color.gray, lineWidth: 1)  // 枠線を描画
-                    )
-                    if text.isEmpty {
-                        // プレースホルダとして表示するTextを表示
-                        Text(" Enter text here")
-                            .foregroundColor(.gray)  // プレースホルダの文字色をグレーに
+                    HStack {  // 追加機能のボタンを横に配置
+                        Button(action: {
+                            showCamera = true  // カメラ画面を表示
+                        }) {
+                            Image(systemName: "camera")  // カメラのアイコン
+                        }
+                        Button(action: {
+                            showPhoto = true  // フォトライブラリ画面を表示
+                        }) {
+                            Image(systemName: "photo")  // フォトのアイコン
+                        }
+                        Button(action: {
+                            showMic = true  // マイク入力画面を表示
+                        }) {
+                            Image(systemName: "music.microphone")  // マイクのアイコン
+                        }
+                        Button(action: {
+                            showTagSelector = true  // タグセレクターを表示
+                        }) {
+                            Image(systemName: "tag")  // タグのアイコン
+                        }
+                        Button(action: {
+                            showLocation = true  // 位置情報画面を表示
+                        }) {
+                            Image(systemName: "globe")  // 地球のアイコン
+                        }
+                        Spacer()  // 右側にスペースを追加
                     }
-                }
-                HStack {  // 追加機能のボタンを横に配置
-                    Button(action: {
-                        showCamera = true  // カメラ画面を表示
-                    }) {
-                        Image(systemName: "camera")  // カメラのアイコン
-                    }
-                    Button(action: {
-                        showPhoto = true  // フォトライブラリ画面を表示
-                    }) {
-                        Image(systemName: "photo")  // フォトのアイコン
-                    }
-                    Button(action: {
-                        showMic = true  // マイク入力画面を表示
-                    }) {
-                        Image(systemName: "music.microphone")  // マイクのアイコン
-                    }
-                    Button(action: {
-                        showTagSelector = true  // タグセレクターを表示
-                    }) {
-                        Image(systemName: "tag")  // タグのアイコン
-                    }
-                    Button(action: {
-                        showLocation = true  // 位置情報画面を表示
-                    }) {
-                        Image(systemName: "globe")  // 地球のアイコン
-                    }
-                    Spacer()  // 右側にスペースを追加
-                }
-                HStack {  // キャプチャした画像を表示するためのHStackを定義
-                    if !capturedImages.isEmpty {  // capturedImagesが空でない場合に処理を実行
-                        ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
-                            HStack {
-                                ForEach(capturedImages.indices, id: \.self) { index in  // 配列のインデックスでループ
-                                    ZStack(alignment: .topTrailing) {  // 画像と削除ボタンを重ねて配置
-                                        Image(uiImage: capturedImages[index])  // 画像を表示
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 100)
-                                            .padding(.trailing, 8)
-                                        Button(action: {
-                                            showEditMenu = true  // 編集メニューを表示するフラグを有効化
-                                            selectedImageIndex = index  // 選択された画像のインデックスを保存
-                                        }) {
-                                            Image(systemName: "pencil")  // アイコンを'編集'（鉛筆）に変更
-                                                .foregroundColor(.blue)
-                                                .padding(4)
+                    HStack {  // キャプチャした画像を表示するためのHStackを定義
+                        if !capturedImages.isEmpty {  // capturedImagesが空でない場合に処理を実行
+                            ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
+                                HStack {
+                                    ForEach(capturedImages.indices, id: \.self) { index in  // 配列のインデックスでループ
+                                        ZStack(alignment: .topTrailing) {  // 画像と編集ボタンを配置
+                                            Image(uiImage: capturedImages[index])  // 画像を表示
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(height: geometry.size.height / 5)
+                                                // .padding(.trailing, 8)
+                                            Button(action: {
+                                                showEditMenu = true  // 編集メニューを表示するフラグを有効化
+                                                selectedImageIndex = index  // 選択された画像のインデックスを保存
+                                            }) {
+                                                Image(systemName: "pencil")  // アイコンを'編集'（鉛筆）に変更
+                                                    .foregroundColor(.white)
+                                                    .background(Color.black)
+                                                // .padding(4)
+                                            }
                                         }
+                                        // .border(Color.gray, width: 1)
                                     }
                                 }
                             }
-                        }
-                        .confirmationDialog("", isPresented: $showEditMenu, presenting: selectedImageIndex) { index in
-                            // 編集メニューを表示
-                            Button("写真へ保存") {
-                                editAction = .save  // 保存アクションを設定
+                            .confirmationDialog("", isPresented: $showEditMenu, presenting: selectedImageIndex) { index in
+                                // 編集メニューを表示
+                                Button("写真へ保存") {
+                                    editAction = .save  // 保存アクションを設定
+                                }
+                                Button("削除", role: .destructive) {
+                                    editAction = .delete  // 削除アクションを設定
+                                }
                             }
-                            Button("削除", role: .destructive) {
-                                editAction = .delete  // 削除アクションを設定
-                            }
-                        }
-                        .sheet(item: $editAction) { action in
-                            // 選択されたアクションに応じて処理を実行
-                            switch action {
-                            case .save:
-                                //  を表示
-                                ConfirmationDialog(
-                                    title: "写真へ保存",
-                                    message: "この画像を写真アプリに保存しますか？",
-                                    confirmTitle: "保存",
-                                    confirmAction: {
-                                        saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
-                                    }
-                                )
-                                .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
-                                // .interactiveDismissDisabled(true)        // 画面が消えないように
-                            case .delete:
-                                // 削除の確認ダイアログを表示
-                                ConfirmationDialog(
-                                    title: "画像の削除",
-                                    message: "この画像を削除しますか？",
-                                    confirmTitle: "削除",
-                                    confirmAction: {
-                                        if let index = selectedImageIndex {
-                                            capturedImages.remove(at: index)  // 画像を配列から削除
+                            .sheet(item: $editAction) { action in
+                                // 選択されたアクションに応じて処理を実行
+                                switch action {
+                                case .save:
+                                    //  を表示
+                                    ConfirmationDialog(
+                                        title: "写真へ保存",
+                                        message: "この画像を写真アプリに保存しますか？",
+                                        confirmTitle: "保存",
+                                        confirmAction: {
+                                            saveImageToPhotos()  // 画像を写真アプリへ保存する処理を実行
                                         }
-                                    },
-                                    isDestructive: true
-                                )
-                                .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
-                                // .interactiveDismissDisabled(true)        // 画面が消えないように
+                                    )
+                                    .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
+                                    // .interactiveDismissDisabled(true)        // 画面が消えないように
+                                case .delete:
+                                    // 削除の確認ダイアログを表示
+                                    ConfirmationDialog(
+                                        title: "画像の削除",
+                                        message: "この画像を削除しますか？",
+                                        confirmTitle: "削除",
+                                        confirmAction: {
+                                            if let index = selectedImageIndex {
+                                                capturedImages.remove(at: index)  // 画像を配列から削除
+                                            }
+                                        },
+                                        isDestructive: true
+                                    )
+                                    .presentationDetents([.fraction(0.25)])     // 画面高さの 1/4
+                                    // .interactiveDismissDisabled(true)        // 画面が消えないように
+                                }
                             }
                         }
-                    }
-                    Spacer()  // 他のビューとの間隔を確保
-                }  // HStackの終了
-            }
-            Spacer()
-            if showFontSettings {  // フォント設定画面が表示されている場合
-                VStack {
-                    HStack {
-                        Text("書式設定")  // 設定画面のタイトル
-                        Spacer()
-                        Button(action: {
-                            showFontSettings = false  // フォント設定画面を閉じる
-                        }) {
-                            Text("閉じる")
+                        Spacer()  // 他のビューとの間隔を確保
+                    }  // HStackの終了
+                }
+                Spacer()
+                if showFontSettings {  // フォント設定画面が表示されている場合
+                    VStack {
+                        HStack {
+                            Text("書式設定")  // 設定画面のタイトル
+                            Spacer()
+                            Button(action: {
+                                showFontSettings = false  // フォント設定画面を閉じる
+                            }) {
+                                Text("閉じる")
+                            }
+                        }
+                        Divider()
+                        HStack {
+                            Text("フォントサイズ")
+                            Slider(value: $fontSize, in: 10...30, step: 1)  // フォントサイズを調整
+                        }
+                        HStack {
+                            // フォントカラーのColorPicker
+                            Text("フォントカラー")
+                            ColorPicker("", selection: $fontColor)
+                                .labelsHidden()  // ラベルを非表示
+                            Spacer()
+                            // 背景色のColorPicker
+                            Text("背景色")
+                            ColorPicker("", selection: $backgroundColor)
+                                .labelsHidden()  // ラベルを非表示
+                        }
+                        HStack {
+                            Toggle("太字", isOn: $isBold)  // 太字設定のトグル
+                            Toggle("斜体", isOn: $isItalic)  // 斜体設定のトグル
+                            Toggle("下線", isOn: $isUnderline)  // 下線設定のトグル
+                            Spacer()
                         }
                     }
-                    Divider()
-                    HStack {
-                        Text("フォントサイズ")
-                        Slider(value: $fontSize, in: 10...30, step: 1)  // フォントサイズを調整
-                    }
-                    HStack {
-                        // フォントカラーのColorPicker
-                        Text("フォントカラー")
-                        ColorPicker("", selection: $fontColor)
-                            .labelsHidden()  // ラベルを非表示
-                        Spacer()
-                        // 背景色のColorPicker
-                        Text("背景色")
-                        ColorPicker("", selection: $backgroundColor)
-                            .labelsHidden()  // ラベルを非表示
-                    }
-                    HStack {
-                        Toggle("太字", isOn: $isBold)  // 太字設定のトグル
-                        Toggle("斜体", isOn: $isItalic)  // 斜体設定のトグル
-                        Toggle("下線", isOn: $isUnderline)  // 下線設定のトグル
-                        Spacer()
+                    .padding()
+                    .background(Color.white)  // 背景色を白に設定
+                    .cornerRadius(AppSetting.cornerRadius)  // 角丸を適用
+                    .shadow(radius: AppSetting.shadowRadius)  // 影を適用
+                    .padding()
+                    .onAppear {
+                        hideKeyboard()  // フォント設定画面が表示されたらキーボードを非表示に
                     }
                 }
-                .padding()
-                .background(Color.white)  // 背景色を白に設定
-                .cornerRadius(AppSetting.cornerRadius)  // 角丸を適用
-                .shadow(radius: AppSetting.shadowRadius)  // 影を適用
-                .padding()
-                .onAppear {
-                    hideKeyboard()  // フォント設定画面が表示されたらキーボードを非表示に
+            }
+            .padding()  // 全体にパディングを適用
+            .onAppear {
+                adjustTextEditorHeight()  // テキストエディタの高さを調整
+                setupKeyboardObservers()  // キーボード表示のオブザーバを設定
+            }
+            .onDisappear {
+                removeKeyboardObservers()  // キーボード表示のオブザーバを削除
+            }
+            .overlay(
+                Group {
+                    if showPhoto {
+                        VStack {
+                            Text("showPhoto")  // フォトライブラリ画面（仮）
+                            Button(action: {
+                                showPhoto = false  // フォトライブラリ画面を閉じる
+                            }) {
+                                Text("戻る")
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.white.opacity(0.9))  // 半透明の背景
+                        .edgesIgnoringSafeArea(.all)
+                    } else if showMic {
+                        VStack {
+                            Text("showMic")  // マイク入力画面（仮）
+                            Button(action: {
+                                showMic = false  // マイク入力画面を閉じる
+                            }) {
+                                Text("戻る")
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.white.opacity(0.9))
+                        .edgesIgnoringSafeArea(.all)
+                    } else if showTagSelector {
+                        VStack {
+                            Text("showTagSelector")  // タグセレクター画面（仮）
+                            Button(action: {
+                                showTagSelector = false  // タグセレクター画面を閉じる
+                            }) {
+                                Text("戻る")
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.white.opacity(0.9))
+                        .edgesIgnoringSafeArea(.all)
+                    } else if showLocation {
+                        VStack {
+                            Text("showLocation")  // 位置情報画面（仮）
+                            Button(action: {
+                                showLocation = false  // 位置情報画面を閉じる
+                            }) {
+                                Text("戻る")
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.white.opacity(0.9))
+                        .edgesIgnoringSafeArea(.all)
+                    }
+                }
+            )
+            .sheet(isPresented: $showCamera) {
+                ImagePicker(sourceType: .camera) { image in
+                    capturedImages.append(image)  // 取得した画像を配列に追加
+                    // FIXME: 現時点カメラで撮った画像そのまま採用する。
+                    // FIXME: 画像編集処理必要な場合、下記を開放
+                    // showImageEditor = true
                 }
             }
-        }
-        .padding()  // 全体にパディングを適用
-        .onAppear {
-            adjustTextEditorHeight()  // テキストエディタの高さを調整
-            setupKeyboardObservers()  // キーボード表示のオブザーバを設定
-        }
-        .onDisappear {
-            removeKeyboardObservers()  // キーボード表示のオブザーバを削除
-        }
-        .overlay(
-            Group {
-                if showPhoto {
-                    VStack {
-                        Text("showPhoto")  // フォトライブラリ画面（仮）
-                        Button(action: {
-                            showPhoto = false  // フォトライブラリ画面を閉じる
-                        }) {
-                            Text("戻る")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))  // 半透明の背景
-                    .edgesIgnoringSafeArea(.all)
-                } else if showMic {
-                    VStack {
-                        Text("showMic")  // マイク入力画面（仮）
-                        Button(action: {
-                            showMic = false  // マイク入力画面を閉じる
-                        }) {
-                            Text("戻る")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))
-                    .edgesIgnoringSafeArea(.all)
-                } else if showTagSelector {
-                    VStack {
-                        Text("showTagSelector")  // タグセレクター画面（仮）
-                        Button(action: {
-                            showTagSelector = false  // タグセレクター画面を閉じる
-                        }) {
-                            Text("戻る")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))
-                    .edgesIgnoringSafeArea(.all)
-                } else if showLocation {
-                    VStack {
-                        Text("showLocation")  // 位置情報画面（仮）
-                        Button(action: {
-                            showLocation = false  // 位置情報画面を閉じる
-                        }) {
-                            Text("戻る")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))
-                    .edgesIgnoringSafeArea(.all)
-                }
+            // FIXME: 現時点カメラで撮った画像そのまま採用する。
+            // FIXME: 画像編集処理必要な場合、下記を開放
+            // .sheet(isPresented: $showImageEditor) {
+            //     Text("Edit Picture")
+            //     if let image = capturedImage {
+            //         ImageEditorView(image: image) { editedImage in
+            //             capturedImage = editedImage
+            //         }
+            //     }
+            // }
+            .alert(isPresented: $showAlertFlag) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
-        )
-        .sheet(isPresented: $showCamera) {
-            ImagePicker(sourceType: .camera) { image in
-                capturedImages.append(image)  // 取得した画像を配列に追加
-                // FIXME: 現時点カメラで撮った画像そのまま採用する。
-                // FIXME: 画像編集処理必要な場合、下記を開放
-                // showImageEditor = true
-            }
-        }
-        // FIXME: 現時点カメラで撮った画像そのまま採用する。
-        // FIXME: 画像編集処理必要な場合、下記を開放
-        // .sheet(isPresented: $showImageEditor) {
-        //     Text("Edit Picture")
-        //     if let image = capturedImage {
-        //         ImageEditorView(image: image) { editedImage in
-        //             capturedImage = editedImage
-        //         }
-        //     }
-        // }
-        .alert(isPresented: $showAlertFlag) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
     
