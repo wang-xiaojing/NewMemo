@@ -40,6 +40,9 @@ struct NewView: View {
     @State private var alertMessage: String = ""
     @State private var showAlertFlag: Bool = false
 
+    @State private var selectedImage: UIImage? = nil
+    @State private var isDisplayingImage: Bool = false  // シート表示フラグ
+
     enum EditAction: Identifiable {
         case delete
         case save
@@ -151,6 +154,11 @@ struct NewView: View {
                                                 .scaledToFit()
                                                 .frame(height: geometry.size.height / 5)
                                                 // .padding(.trailing, 8)
+                                                // 画像がタップされたときの処理
+                                                .onTapGesture {
+                                                    // タップされた画像を保存し、シートを表示
+                                                    selectedImage = capturedImages[index]
+                                                    isDisplayingImage = true                                                }
                                             Button(action: {
                                                 showEditMenu = true  // 編集メニューを表示するフラグを有効化
                                                 selectedImageIndex = index  // 選択された画像のインデックスを保存
@@ -163,6 +171,13 @@ struct NewView: View {
                                         }
                                         // .border(Color.gray, width: 1)
                                     }
+                                }
+                            }
+                            // 選択された画像を表示するシートを設定します
+                            .sheet(isPresented: $isDisplayingImage) {
+                                // DisplayViewを表示
+                                if let image = selectedImage {
+                                    DisplayView(image: image)
                                 }
                             }
                             .confirmationDialog("", isPresented: $showEditMenu, presenting: selectedImageIndex) { index in
@@ -534,6 +549,22 @@ struct PhotoPicker: UIViewControllerRepresentable {
     }
 }
 
+// DisplayViewを新たに追加し、選択された画像を表示します
+struct DisplayView: View {
+    var image: UIImage
+
+    var body: some View {
+        NavigationView {
+            // 選択された画像を表示
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .navigationTitle("表示画面")
+                .navigationBarTitleDisplayMode(.inline)
+                // 左上に「戻る」ボタンが表示されます（デフォルトの戻るボタン）
+        }
+    }
+}
 // プレビューを表示するためのコード
 #Preview {
     NewView()
