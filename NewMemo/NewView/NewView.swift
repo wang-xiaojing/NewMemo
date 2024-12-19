@@ -40,7 +40,8 @@ struct NewView: View {
     @State private var alertMessage: String = ""
     @State private var showAlertFlag: Bool = false
 
-    @State private var selectedImage: UIImage? = nil
+    // 選択された画像をIdentifiableUIImage型に変更
+    @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
 
     enum EditAction: Identifiable {
@@ -154,11 +155,11 @@ struct NewView: View {
                                                 .scaledToFit()
                                                 .frame(height: geometry.size.height / 5)
                                                 // .padding(.trailing, 8)
-                                                // 画像がタップされたときの処理
-                                                .onTapGesture {
-                                                    // タップされた画像を保存し、シートを表示
-                                                    selectedImage = capturedImages[index]
-                                                    isDisplayingImage = true                                                }
+                                            // 画像がタップされたときの処理
+                                            .onTapGesture {
+                                                // タップされた画像をIdentifiableUIImageとして保存
+                                                selectedImage = IdentifiableUIImage(image: capturedImages[index])
+                                            }
                                             Button(action: {
                                                 showEditMenu = true  // 編集メニューを表示するフラグを有効化
                                                 selectedImageIndex = index  // 選択された画像のインデックスを保存
@@ -174,11 +175,9 @@ struct NewView: View {
                                 }
                             }
                             // 選択された画像を表示するシートを設定します
-                            .sheet(isPresented: $isDisplayingImage) {
+                            .sheet(item: $selectedImage) { identifiableImage in
                                 // DisplayViewを表示
-                                if let image = selectedImage {
-                                    DisplayView(image: image)
-                                }
+                                DisplayView(image: identifiableImage.image)
                             }
                             .confirmationDialog("", isPresented: $showEditMenu, presenting: selectedImageIndex) { index in
                                 // 編集メニューを表示
@@ -549,9 +548,17 @@ struct PhotoPicker: UIViewControllerRepresentable {
     }
 }
 
+// UIImageをラップしてIdentifiableに準拠させる構造体
+struct IdentifiableUIImage: Identifiable {
+    let id = UUID()
+    let image: UIImage
+}
+
 // DisplayViewを新たに追加し、選択された画像を表示します
 struct DisplayView: View {
     var image: UIImage
+    // シートを閉じるための環境変数を追加
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationView {
@@ -561,10 +568,19 @@ struct DisplayView: View {
                 .scaledToFit()
                 .navigationTitle("表示画面")
                 .navigationBarTitleDisplayMode(.inline)
-                // 左上に「戻る」ボタンが表示されます（デフォルトの戻るボタン）
+                // 左上に「戻る」ボタンを追加
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("戻る") {
+                            // 「表示画面」を閉じる処理
+                            dismiss()
+                        }
+                    }
+                }
         }
     }
 }
+
 // プレビューを表示するためのコード
 #Preview {
     NewView()
