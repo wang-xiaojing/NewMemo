@@ -39,8 +39,8 @@ struct AudioView: View {
                                     }) {
                                         Image(systemName: "stop.fill")
                                             .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(.red)
+                                            .frame(width: 18, height: 18)
+                                            .foregroundColor(.black)
                                     }
                                     .buttonStyle(BorderlessButtonStyle())
                                     
@@ -66,7 +66,7 @@ struct AudioView: View {
                                           ? (recording.isPaused ? "play.fill" : "pause.fill")
                                           : "play.circle")
                                     .resizable()
-                                    .frame(width: 20, height: 20)
+                                    .frame(width: recording.isPlaying ? 18 : 20, height: recording.isPlaying ? 18 : 20)
                                     .foregroundColor(.blue)
                                     .opacity(audioRecorder.audioRecordings.contains { $0.isPlaying && $0.fileName != recording.fileName } ? 0.5 : 1.0)
                                 }
