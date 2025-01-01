@@ -41,6 +41,9 @@
         }
       }
     },
+    "AudioRecod" : {
+
+    },
     "Brightness" : {
 
     },
@@ -92,9 +95,6 @@
 
     },
     "New" : {
-
-    },
-    "New Window" : {
 
     },
     "OK" : {
