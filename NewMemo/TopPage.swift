@@ -104,7 +104,7 @@ struct TopPage: View {
                     .padding()
                 }
             }
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
+            // .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
             .onChange(of: searchText) {
                 // サーチテキストが変更されたときの処理
                 // 例えば、itemsをフィルタリングするなど

@@ -14,7 +14,7 @@ struct NewView: View {
     @State private var textEditorHeight: CGFloat = 60 // テキストエディタの高さを初期設定（3行分）
     @State private var showCamera: Bool = false  // カメラ画面の表示フラグ
     @State private var showPhoto: Bool = false  // フォトライブラリ画面の表示フラグ
-    @State private var showMic: Bool = false  // マイク入力画面の表示フラグ
+    @State private var showAudioOverlayWindow: Bool = false  // マイク入力画面の表示フラグ
     @State private var showTagSelector: Bool = false  // タグセレクターの表示フラグ
     @State private var showLocation: Bool = false  // 位置情報画面の表示フラグ
     
@@ -43,6 +43,18 @@ struct NewView: View {
     // 選択された画像をIdentifiableUIImage型に変更
     @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
+    // MARK: AudioView用
+    @EnvironmentObject var audioRecorder: AudioRecorder
+    
+    @State private var showAudioAlertFlag = false
+    @State private var audioAlertTitle = ""
+    @State private var audioAlertMessage = ""
+    
+    @State private var isAudioSaveEnabled = false
+    @State private var isAudioPaused = false
+    
+    @State private var audioWaveSamples: [CGFloat] = []
+    @State private var audioWaveTimer: Timer?
 
     enum EditAction: Identifiable {
         case delete
@@ -128,7 +140,9 @@ struct NewView: View {
                             Image(systemName: "photo")  // フォトのアイコン
                         }
                         Button(action: {
-                            showMic = true  // マイク入力画面を表示
+                            // MARK: AudioView用
+                            showAudioOverlayWindow = true
+                            audioWaveSamples.removeAll()     //　波形データを空にする
                         }) {
                             Image(systemName: "music.microphone")  // マイクのアイコン
                         }
@@ -223,6 +237,17 @@ struct NewView: View {
                         }
                         Spacer()  // 他のビューとの間隔を確保
                     }  // HStackの終了
+                    // MARK: 録音処理
+                    AudioView(
+                        showAlertFlag: $showAudioAlertFlag,
+                        alertTitle: $audioAlertTitle,
+                        alertMessage: $audioAlertMessage,
+                        isSaveEnabled: $isAudioSaveEnabled,
+                        showOverlayWindow: $showAudioOverlayWindow,
+                        isPaused: $isAudioPaused,
+                        waveSamples: $audioWaveSamples,
+                        waveTimer: $audioWaveTimer
+                    )
                 }
                 Spacer()
                 if showFontSettings {  // フォント設定画面が表示されている場合
@@ -291,18 +316,18 @@ struct NewView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.white.opacity(0.9))  // 半透明の背景
                         .edgesIgnoringSafeArea(.all)
-                    } else if showMic {
-                        VStack {
-                            Text("showMic")  // マイク入力画面（仮）
-                            Button(action: {
-                                showMic = false  // マイク入力画面を閉じる
-                            }) {
-                                Text("戻る")
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white.opacity(0.9))
-                        .edgesIgnoringSafeArea(.all)
+                    // } else if showAudioOverlayWindow {
+                    //     VStack {
+                    //         Text("showMic")  // マイク入力画面（仮）
+                    //         Button(action: {
+                    //             showAudioOverlayWindow = false  // マイク入力画面を閉じる
+                    //         }) {
+                    //             Text("戻る")
+                    //         }
+                    //     }
+                    //     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    //     .background(Color.white.opacity(0.9))
+                    //     .edgesIgnoringSafeArea(.all)
                     } else if showTagSelector {
                         VStack {
                             Text("showTagSelector")  // タグセレクター画面（仮）

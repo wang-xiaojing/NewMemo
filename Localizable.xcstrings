@@ -70,6 +70,9 @@
         }
       }
     },
+    "Complete" : {
+
+    },
     "Contrast" : {
 
     },
@@ -91,7 +94,16 @@
     "New" : {
 
     },
+    "New Window" : {
+
+    },
     "OK" : {
+
+    },
+    "Pause" : {
+
+    },
+    "Resume" : {
 
     },
     "Saturation" : {
@@ -101,9 +113,6 @@
 
     },
     "Search" : {
-
-    },
-    "Search items" : {
 
     },
     "Select an item" : {
@@ -118,13 +127,13 @@
     "showLocation" : {
 
     },
-    "showMic" : {
-
-    },
     "showPhoto" : {
 
     },
     "showTagSelector" : {
+
+    },
+    "Start" : {
 
     },
     "キャンセル" : {

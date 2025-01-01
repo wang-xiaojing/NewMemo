@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct AppSetting {
+    // MARK: AudioView用
+    public static let voiceRecodeSamplePoints:Int = 60
+    public static let voiceRecodeSampleTimeInterval:TimeInterval = 0.1
 
     public static let cornerRadius: CGFloat = 10
     public static let shadowRadius: CGFloat = 10

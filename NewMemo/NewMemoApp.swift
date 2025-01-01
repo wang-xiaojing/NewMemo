@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct NewMemoApp: App {
+    // AudioRecorderのインスタンスを作成
+    @StateObject private var audioRecorder = AudioRecorder()
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -26,6 +29,7 @@ struct NewMemoApp: App {
     var body: some Scene {
         WindowGroup {
             TopPage()
+                .environmentObject(audioRecorder)
         }
         .modelContainer(sharedModelContainer)
     }
