@@ -22,7 +22,7 @@ struct AudioView: View {
     @Binding var waveTimer: Timer?
     
     var body: some View {
-        ZStack {
+        // ZStack {
             NavigationView {
                 VStack {
                     // 録音一覧
@@ -111,9 +111,9 @@ struct AudioView: View {
                     Text(alertMessage)
                 }
             }
-            
+        .sheet(isPresented: $showOverlayWindow) {
             // New Window
-            if showOverlayWindow {
+            // if showOverlayWindow {
                 // ZStack {
                     Color.clear.ignoresSafeArea()
                     VStack {
@@ -203,7 +203,7 @@ struct AudioView: View {
                     .padding()
                 // }
             }
-        }
+        // }
     }
     
     private func showAlert(title: String, message: String) {
