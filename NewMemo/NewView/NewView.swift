@@ -239,14 +239,14 @@ struct NewView: View {
                     }  // HStackの終了
                     // MARK: 録音処理
                     AudioView(
-                        showAlertFlag: $showAudioAlertFlag,
-                        alertTitle: $audioAlertTitle,
-                        alertMessage: $audioAlertMessage,
-                        isSaveEnabled: $isAudioSaveEnabled,
-                        showOverlayWindow: $showAudioOverlayWindow,
-                        isPaused: $isAudioPaused,
-                        waveSamples: $audioWaveSamples,
-                        waveTimer: $audioWaveTimer
+                        showAudioAlertFlag: $showAudioAlertFlag,
+                        audioAlertTitle: $audioAlertTitle,
+                        audioAlertMessage: $audioAlertMessage,
+                        isAudioSaveEnabled: $isAudioSaveEnabled,
+                        showAudioOverlayWindow: $showAudioOverlayWindow,
+                        isAudioPaused: $isAudioPaused,
+                        audioWaveSamples: $audioWaveSamples,
+                        audioWaveTimer: $audioWaveTimer
                     )
                 }
                 Spacer()

@@ -10,16 +10,16 @@ import SwiftUI
 struct AudioView: View {
     @EnvironmentObject var audioRecorder: AudioRecorder
     
-    @Binding var showAlertFlag: Bool
-    @Binding var alertTitle: String
-    @Binding var alertMessage: String
+    @Binding var showAudioAlertFlag: Bool
+    @Binding var audioAlertTitle: String
+    @Binding var audioAlertMessage: String
     
-    @Binding var isSaveEnabled: Bool
-    @Binding var showOverlayWindow: Bool
-    @Binding var isPaused: Bool
+    @Binding var isAudioSaveEnabled: Bool
+    @Binding var showAudioOverlayWindow: Bool
+    @Binding var isAudioPaused: Bool
     
-    @Binding var waveSamples: [CGFloat]
-    @Binding var waveTimer: Timer?
+    @Binding var audioWaveSamples: [CGFloat]
+    @Binding var audioWaveTimer: Timer?
     
     var body: some View {
         NavigationView {
@@ -103,16 +103,14 @@ struct AudioView: View {
             .onAppear {
                 audioRecorder.fetchRecordings()
             }
-            .alert(alertTitle, isPresented: $showAlertFlag) {
+            .alert(audioAlertTitle, isPresented: $showAudioAlertFlag) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text(alertMessage)
+                Text(audioAlertMessage)
             }
             .overlay(
-                // showOverlayWindowがtrueのときに表示されるオーバーレイウィンドウ
                 Group {
-                    // AudioRecod Window
-                    if showOverlayWindow {
+                    if showAudioOverlayWindow {  // showOverlayWindowがtrueのときに表示されるオーバーレイウィンドウ
                         Color.clear.ignoresSafeArea()   // 背景を半透明の黒にして操作をブロック
                         VStack {
                             Text("AudioRecod")
@@ -124,7 +122,7 @@ struct AudioView: View {
                                 .background(Color.black.opacity(0.1))
                                 .overlay(
                                     GeometryReader { geo in
-                                        AudioWaveView(samples: waveSamples, size: geo.size)
+                                        AudioWaveView(samples: audioWaveSamples, size: geo.size)
                                     }
                                 )
                                 .padding()
@@ -133,41 +131,41 @@ struct AudioView: View {
                                 // Cancel: 録音破棄して閉じる
                                 Button("Cancel") {
                                     stopWaveformUpdates()
-                                    if audioRecorder.isRecording || isPaused {
+                                    if audioRecorder.isRecording || isAudioPaused {
                                         audioRecorder.stopRecording()
                                         if let lastFile = audioRecorder.audioRecordings.last?.fileName {
                                             audioRecorder.deleteRecording(fileName: lastFile)
                                         }
-                                        isPaused = false
-                                        isSaveEnabled = false
+                                        isAudioPaused = false
+                                        isAudioSaveEnabled = false
                                     }
-                                    showOverlayWindow = false   // オーバーレイウィンドウを閉じる
+                                    showAudioOverlayWindow = false   // オーバーレイウィンドウを閉じる
                                 }
                                 Spacer()
                                 // 録音/一時停止/再開
-                                if audioRecorder.isRecording && !isPaused {
+                                if audioRecorder.isRecording && !isAudioPaused {
                                     Button(action: {
                                         stopWaveformUpdates()
                                         audioRecorder.pauseRecording(fileName: "")
-                                        isPaused = true
-                                        isSaveEnabled = true
+                                        isAudioPaused = true
+                                        isAudioSaveEnabled = true
                                     }) {
                                         Text("Pause").foregroundColor(.red)
                                     }
-                                } else if isPaused {
+                                } else if isAudioPaused {
                                     Button(action: {
                                         startWaveformUpdates()
                                         audioRecorder.resumeRecording(fileName: "")
-                                        isPaused = false
-                                        isSaveEnabled = false
+                                        isAudioPaused = false
+                                        isAudioSaveEnabled = false
                                     }) {
                                         Text("Resume").foregroundColor(.blue)
                                     }
                                 } else {
                                     Button(action: {
                                         audioRecorder.startRecording()
-                                        isPaused = false
-                                        isSaveEnabled = false
+                                        isAudioPaused = false
+                                        isAudioSaveEnabled = false
                                         startWaveformUpdates()
                                     }) {
                                         Text("Start").foregroundColor(.green)
@@ -176,18 +174,18 @@ struct AudioView: View {
                                 Spacer()
                                 // Complete
                                 Button("Complete") {
-                                    if isSaveEnabled {
-                                        if isPaused {
+                                    if isAudioSaveEnabled {
+                                        if isAudioPaused {
                                             audioRecorder.stopRecording()
-                                            isPaused = false
+                                            isAudioPaused = false
                                         }
                                         stopWaveformUpdates()
-                                        showOverlayWindow = false
-                                        isSaveEnabled = false
+                                        showAudioOverlayWindow = false
+                                        isAudioSaveEnabled = false
                                     }
                                 }
-                                .disabled(!isSaveEnabled)
-                                .opacity(isSaveEnabled ? 1.0 : 0.4)
+                                .disabled(!isAudioSaveEnabled)
+                                .opacity(isAudioSaveEnabled ? 1.0 : 0.4)
                             }
                             .padding()
                         }
@@ -208,29 +206,29 @@ struct AudioView: View {
     }
     
     private func showAlert(title: String, message: String) {
-        alertTitle = title
-        alertMessage = message
-        showAlertFlag = true
+        audioAlertTitle = title
+        audioAlertMessage = message
+        showAudioAlertFlag = true
     }
     
     // 波形更新開始
     func startWaveformUpdates() {
-        waveTimer?.invalidate()
-        waveTimer = Timer.scheduledTimer(withTimeInterval: AppSetting.voiceRecodeSampleTimeInterval, repeats: true) { _ in
+        audioWaveTimer?.invalidate()
+        audioWaveTimer = Timer.scheduledTimer(withTimeInterval: AppSetting.voiceRecodeSampleTimeInterval, repeats: true) { _ in
             guard let recorder = audioRecorder.internalRecorder else { return }
             recorder.updateMeters()
             let power = recorder.averagePower(forChannel: 0)
             let normalized = min(max((power + 160) / 160, 0), 1)
-            waveSamples.append(CGFloat(normalized))
-            if waveSamples.count > AppSetting.voiceRecodeSamplePoints {
-                waveSamples.removeFirst()
+            audioWaveSamples.append(CGFloat(normalized))
+            if audioWaveSamples.count > AppSetting.voiceRecodeSamplePoints {
+                audioWaveSamples.removeFirst()
             }
         }
     }
     
     func stopWaveformUpdates() {
-        waveTimer?.invalidate()
-        waveTimer = nil
+        audioWaveTimer?.invalidate()
+        audioWaveTimer = nil
     }
 }
 
