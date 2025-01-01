@@ -353,7 +353,7 @@ struct NewView: View {
                         .background(Color.white.opacity(0.9))
                         .edgesIgnoringSafeArea(.all)
                     } else if showAudioOverlayWindow {  // showOverlayWindowがtrueのときに表示されるオーバーレイウィンドウ
-                        Color.clear.ignoresSafeArea()   // 背景を半透明の黒にして操作をブロック
+                        Color.gray.ignoresSafeArea().opacity(0.6)   // 背景を半透明の黒にして操作をブロック
                         VStack {
                             Text("AudioRecod")
                                 .font(.title3)
@@ -432,8 +432,8 @@ struct NewView: View {
                             .padding()
                         }
                         .frame(
-                            width: UIScreen.main.bounds.width * 0.8,
-                            height: UIScreen.main.bounds.height * 0.3
+                            width: UIScreen.main.bounds.width * 0.8
+                            // height: UIScreen.main.bounds.height * 0.3
                         )
                         .background(Color.white)
                         .cornerRadius(10)
