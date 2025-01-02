@@ -5,12 +5,17 @@
 //  Created by Xiaojing Wang on 2024/12/07.
 //
 
-import SwiftUI  // SwiftUIフレームワークをインポート
-import PhotosUI  // 写真関連のフレームワークをインポート
-import Photos  // 写真関連のフレームワークをインポート
+import SwiftUI
+import PhotosUI
+import Photos
 
 struct NewView: View {
-    
+    // MARK: AudioView用
+    @EnvironmentObject var audioRecorder: AudioRecorder
+    @State private var showAudioAlertFlag = false
+    @State private var audioAlertTitle = ""
+    @State private var audioAlertMessage = ""
+
     @Binding var showAudioOverlayWindow: Bool
 
     @State private var isAudioSaveEnabled = false
@@ -50,14 +55,6 @@ struct NewView: View {
     // 選択された画像をIdentifiableUIImage型に変更
     @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
-    // MARK: AudioView用
-    @EnvironmentObject var audioRecorder: AudioRecorder
-    
-    @State private var showAudioAlertFlag = false
-    @State private var audioAlertTitle = ""
-    @State private var audioAlertMessage = ""
-    
-    
     
     enum EditAction: Identifiable {
         case delete
@@ -347,16 +344,11 @@ struct NewView: View {
                         .background(Color.white.opacity(0.9))
                         .edgesIgnoringSafeArea(.all)
                     } else if showAudioOverlayWindow {  // showOverlayWindowがtrueのときに表示されるオーバーレイウィンドウ
-                            // Color.gray.ignoresSafeArea()// .opacity(0.6)   // 背景を半透明の黒にして操作をブロック
-                            //     .frame(
-                            //         width: UIScreen.main.bounds.width
-                            //         // height: UIScreen.main.bounds.height * 0.3
-                            //     )
-                            AudioOverlayWindow(isAudioSaveEnabled: $isAudioSaveEnabled,
-                                               showAudioOverlayWindow: $showAudioOverlayWindow,
-                                               isAudioPaused: $isAudioPaused,
-                                               audioWaveSamples: $audioWaveSamples,
-                                               audioWaveTimer: $audioWaveTimer)
+                        AudioOverlayWindow(isAudioSaveEnabled: $isAudioSaveEnabled,
+                                           showAudioOverlayWindow: $showAudioOverlayWindow,
+                                           isAudioPaused: $isAudioPaused,
+                                           audioWaveSamples: $audioWaveSamples,
+                                           audioWaveTimer: $audioWaveTimer)
                    }
                 }
             )
