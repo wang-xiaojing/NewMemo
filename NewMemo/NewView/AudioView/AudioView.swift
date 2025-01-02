@@ -99,6 +99,7 @@ struct AudioView: View {
                         .padding(.vertical, 5)
                     }
                 }
+                .disabled(showAudioOverlayWindow)
             }
             .onAppear {
                 audioRecorder.fetchRecordings()
