@@ -5,6 +5,7 @@
 //  Created by Xiaojing Wang on 2025/01/06.
 //
 import SwiftUI
+import UIKit
 import MapKit
 
 // MapViewをラップするビュー
@@ -40,7 +41,7 @@ struct MapViewContainer: View {
     @State private var registeredLocations = [MKMapItem]() // 登録された位置情報を保持するプロパティ
     @State private var isRegisterViewPresented = false // 追加: 位置登録画面の表示状態を管理するプロパティ
     @State private var registerLocationName = "" // 追加: 登録する位置の名称を保持するプロパティ
-    @Binding var justRegisteredFirst: Bool // 追加: 登録フラグ
+    @State private var justRegisteredFirst = false    // 追加: 登録フラグ
     @State private var justRegisteredSecond = false // 追加: 登録フラグ
     @State private var showAlreadyRegisteredAlertForHere = false
     @State private var showAlreadyRegisteredAlert = false // 追加: アラート表示状態を管理するプロパティ
@@ -49,8 +50,29 @@ struct MapViewContainer: View {
     @State private var showAlreadyRegisteredAlertForRemove = false
     @State private var showAlreadyRegisteredAlertForSearch = false
     @State private var tempSearchItem: MKMapItem?
+    @Binding var showLocation: Bool  // 位置情報画面の表示フラグ
 
     var body: some View {
+        HStack {
+            Button(action: {
+                showLocation = false  // Cancelボタンが押されたらシートを閉じる
+            }) {
+                Text("Cancel")
+            }
+            Spacer()
+            Text("Map View")  // タイトルを表示
+            Spacer()
+            Button(action: {
+                // 追加ボタンが押された時の処理
+                showLocation = false  // 位置情報登録状態中はシートを閉じる
+            }) {
+                Text("追加")
+                    .foregroundColor(justRegisteredFirst ? .blue : .gray)  // 位置情報登録状態中は青色、そうでない場合は灰色
+            }
+            .disabled(!justRegisteredFirst)  // 位置情報登録状態中でない場合はボタンを無効化
+        }
+        .padding()
+        Divider()
         ZStack(alignment: .topTrailing) {
             MapView(
                 locationManager: locationManager,
