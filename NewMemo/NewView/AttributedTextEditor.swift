@@ -21,7 +21,14 @@ struct AttributedTextEditor: UIViewRepresentable {
         textView.delegate = context.coordinator
         textView.isScrollEnabled = true
         textView.backgroundColor = .clear
-        textView.returnKeyType = .done  // リターンキーを「完了」に設定
+
+        // キーボードに「DONE」ボタンを追加
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "DONE", style: .done, target: textView, action: #selector(textView.resignFirstResponder))
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.items = [flexibleSpace, doneButton]
+        textView.inputAccessoryView = toolbar
 
         return textView
     }
@@ -66,14 +73,6 @@ struct AttributedTextEditor: UIViewRepresentable {
 
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
-        }
-
-        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-            if text == "\n" {  // リターンキーが押されたとき
-                textView.resignFirstResponder()  // キーボードを閉じる
-                return false
-            }
-            return true
         }
     }
 }
