@@ -97,6 +97,9 @@
     "List View" : {
 
     },
+    "Map View" : {
+
+    },
     "Menu" : {
 
     },
@@ -143,9 +146,6 @@
 
     },
     "Settings View" : {
-
-    },
-    "showLocation" : {
 
     },
     "showTagSelector" : {
@@ -215,6 +215,9 @@
 
     },
     "表示画面" : {
+
+    },
+    "追加" : {
 
     },
     "閉じる" : {

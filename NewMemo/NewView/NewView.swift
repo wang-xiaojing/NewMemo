@@ -319,18 +319,31 @@ struct NewView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.white.opacity(0.9))
                         .edgesIgnoringSafeArea(.all)
-                    } else if showLocation {
-                        VStack {
-                            Text("showLocation")  // 位置情報画面（仮）
-                            Button(action: {
-                                showLocation = false  // 位置情報画面を閉じる
-                            }) {
-                                Text("戻る")
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white.opacity(0.9))
-                        .edgesIgnoringSafeArea(.all)
+                    // } else if showLocation {
+                    //     VStack {
+                    //         HStack {
+                    //             Button(action: {
+                    //                 showLocation = false  // Cancelボタンが押されたらシートを閉じる
+                    //             }) {
+                    //                 Text("Cancel")
+                    //             }
+                    //             Spacer()
+                    //             Text("Map View")  // タイトルを表示
+                    //             Spacer()
+                    //             Button(action: {
+                    //                 // 追加ボタンが押された時の処理
+                    //                 showLocation = false  // とりあえずシートを閉じる
+                    //             }) {
+                    //                 Text("追加")
+                    //             }
+                    //         }
+                    //         .padding()
+                    //         Divider()
+                    //         MapViewContainer()  // MapViewContainerを表示
+                    //     }
+                    //     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    //     .background(Color.white.opacity(0.9))
+                    //     .edgesIgnoringSafeArea(.all)
                     } else if showAudioOverlayWindow {  // showOverlayWindowがtrueのときに表示されるオーバーレイウィンドウ
                         AudioOverlayWindow(isAudioSaveEnabled: $isAudioSaveEnabled,
                                            showAudioOverlayWindow: $showAudioOverlayWindow,
@@ -364,6 +377,32 @@ struct NewView: View {
             // }
             .alert(isPresented: $showAlertFlag) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
+            .sheet(isPresented: $showLocation) {
+                VStack {
+                    HStack {
+                        Button(action: {
+                            showLocation = false  // Cancelボタンが押されたらシートを閉じる
+                        }) {
+                            Text("Cancel")
+                        }
+                        Spacer()
+                        Text("Map View")  // タイトルを表示
+                        Spacer()
+                        Button(action: {
+                            // 追加ボタンが押された時の処理
+                            showLocation = false  // とりあえずシートを閉じる
+                        }) {
+                            Text("追加")
+                        }
+                    }
+                    .padding()
+                    Divider()
+                    MapViewContainer()  // MapViewContainerを表示
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.white.opacity(0.9))
+                .edgesIgnoringSafeArea(.all)
             }
         }
     }

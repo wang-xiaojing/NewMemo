@@ -16,7 +16,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E2C5D66D2D0B3AEA009BB115 /* Exceptions for "NewMemo" folder in "NewMemo" target */ = {
+		E23504342D377F0F000E6350 /* Exceptions for "NewMemo" folder in "NewMemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +29,7 @@
 		E26DB5072D0319B800DA3568 /* NewMemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E2C5D66D2D0B3AEA009BB115 /* Exceptions for "NewMemo" folder in "NewMemo" target */,
+				E23504342D377F0F000E6350 /* Exceptions for "NewMemo" folder in "NewMemo" target */,
 			);
 			path = NewMemo;
 			sourceTree = "<group>";
@@ -281,6 +281,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewMemo/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "このアプリはカメラを使用します";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "位置表示情報を利用する";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "アプリで録音機能を利用するためにマイクへのアクセスが必要です。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "このアプリは画像を写真に保存します。";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "このアプリは画像を写真に保存します。";
@@ -315,6 +316,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewMemo/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "このアプリはカメラを使用します";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "位置表示情報を利用する";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "アプリで録音機能を利用するためにマイクへのアクセスが必要です。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "このアプリは画像を写真に保存します。";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "このアプリは画像を写真に保存します。";
