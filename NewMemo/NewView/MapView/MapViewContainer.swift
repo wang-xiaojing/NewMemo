@@ -104,15 +104,8 @@ struct MapViewContainer: View {
             }
             ButtonBarView(
                 onSearchButtonClicked: {
-                   // if justRegisteredFirst && !justRegisteredSecond {
-                   //     justRegisteredSecond = true
-                   //     // showAlreadyRegisteredAlertForHere = true
-                   // } else if justRegisteredFirst {
-                   //     // showAlreadyRegisteredAlertForHere = true
-                   // } else {
-                        searchButtonClickCount += 1
-                        isSearchBarPresented = true
-                   //  }
+                    searchButtonClickCount += 1
+                    isSearchBarPresented = true
                 },
                 searchButtonClickCount: searchButtonClickCount, // 追加: searchButtonClickCountを渡す
                 hereButtonClickCount: hereButtonClickCount, // 追加: hereButtonClickCountを渡す
