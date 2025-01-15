@@ -307,19 +307,7 @@ struct NewView: View {
             }
             .overlay(
                 Group {
-                    if showPhoto {
-                        VStack {
-                            Text("showPhoto")  // フォトライブラリ画面（仮）
-                            Button(action: {
-                                showPhoto = false  // フォトライブラリ画面を閉じる
-                            }) {
-                                Text("戻る")
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white.opacity(0.9))  // 半透明の背景
-                        .edgesIgnoringSafeArea(.all)
-                    } else if showTagSelector {
+                    if showTagSelector {
                         VStack {
                             Text("showTagSelector")  // タグセレクター画面（仮）
                             Button(action: {
