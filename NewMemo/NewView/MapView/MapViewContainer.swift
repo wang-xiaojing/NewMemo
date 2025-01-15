@@ -40,7 +40,7 @@ struct MapViewContainer: View {
     @State private var registeredLocations = [MKMapItem]() // 登録された位置情報を保持するプロパティ
     @State private var isRegisterViewPresented = false // 追加: 位置登録画面の表示状態を管理するプロパティ
     @State private var registerLocationName = "" // 追加: 登録する位置の名称を保持するプロパティ
-    @State private var justRegisteredFirst = false // 追加: 登録フラグ
+    @Binding var justRegisteredFirst: Bool // 追加: 登録フラグ
     @State private var justRegisteredSecond = false // 追加: 登録フラグ
     @State private var showAlreadyRegisteredAlertForHere = false
     @State private var showAlreadyRegisteredAlert = false // 追加: アラート表示状態を管理するプロパティ

@@ -51,11 +51,12 @@ struct NewView: View {
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlertFlag: Bool = false
+    @State private var isRegisterViewPresented: Bool = false
 
     // 選択された画像をIdentifiableUIImage型に変更
     @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
-    
+
     enum EditAction: Identifiable {
         case delete
         case save
@@ -366,14 +367,18 @@ struct NewView: View {
                         Spacer()
                         Button(action: {
                             // 追加ボタンが押された時の処理
-                            showLocation = false  // とりあえずシートを閉じる
+                            if isRegisterViewPresented {
+                                showLocation = false  // 位置情報登録状態中はシートを閉じる
+                            }
                         }) {
                             Text("追加")
+                                .foregroundColor(isRegisterViewPresented ? .blue : .gray)  // 位置情報登録状態中は青色、そうでない場合は灰色
                         }
+                        .disabled(!isRegisterViewPresented)  // 位置情報登録状態中でない場合はボタンを無効化
                     }
                     .padding()
                     Divider()
-                    MapViewContainer()  // MapViewContainerを表示
+                    MapViewContainer(justRegisteredFirst: $isRegisterViewPresented)  // MapViewContainerを表示
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white.opacity(0.9))
