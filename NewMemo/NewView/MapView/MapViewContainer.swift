@@ -66,20 +66,25 @@ struct MapViewContainer: View {
             Button(action: {
                 // 追加ボタンが押された時の処理
                 if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
-                    let mapView = MKMapView()
-                    let snapshotOptions = MKMapSnapshotter.Options()
-                    snapshotOptions.region = mapView.region
-                    snapshotOptions.size = CGSize(width: 300, height: 300)  // mapView.frame.size
-                    snapshotOptions.scale = UIScreen.main.scale
-
-                    let snapshotter = MKMapSnapshotter(options: snapshotOptions)
-                    snapshotter.start { snapshot, error in
-                        if let snapshot = snapshot {
-                            let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date(), image: snapshot.image)
-                            parentRegisteredLocations.append(newLocation)
-                        }
-                        showLocation = false  // 位置情報登録状態中はシートを閉じる
+                    // UIApplication.shared.windowsを使用して
+                    // アプリケーションのすべてのウィンドウを取得し、
+                    // その中からキーウィンドウ（現在アクティブなウィンドウ）を見つけます。
+                    // キーウィンドウはユーザーが操作しているウィンドウであり、
+                    // このウィンドウを使ってスナップショットを取得します。
+                    let window = UIApplication.shared.windows.first { $0.isKeyWindow }
+                    // UIGraphicsImageRendererを初期化し、レンダリングする画像のサイズをキーウィンドウのサイズに設定します。
+                    // window?.bounds.sizeがnilの場合は.zero（サイズ0）を使用します。
+                    let renderer = UIGraphicsImageRenderer(size: window?.bounds.size ?? .zero)
+                    // スナップショットの作成
+                    // 現在のウィンドウのヒエラルキー（階層構造）全体を描画します。
+                    // 最新の表示内容がスナップショットに反映されます。
+                    let image = renderer.image { ctx in
+                        window?.drawHierarchy(in: window?.bounds ?? .zero, afterScreenUpdates: true)
                     }
+                    // 新しい登録位置+情報の作成
+                    let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date(), image: image)
+                    parentRegisteredLocations.append(newLocation)
+                    showLocation = false  // 位置情報登録状態中はシートを閉じる
                 } else {
                     showLocation = false  // 位置情報登録状態中はシートを閉じる
                 }
