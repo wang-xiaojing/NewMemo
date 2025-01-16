@@ -66,10 +66,23 @@ struct MapViewContainer: View {
             Button(action: {
                 // 追加ボタンが押された時の処理
                 if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
-                    let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date())
-                    parentRegisteredLocations.append(newLocation)
+                    let mapView = MKMapView()
+                    let snapshotOptions = MKMapSnapshotter.Options()
+                    snapshotOptions.region = mapView.region
+                    snapshotOptions.size = CGSize(width: 300, height: 300)  // mapView.frame.size
+                    snapshotOptions.scale = UIScreen.main.scale
+
+                    let snapshotter = MKMapSnapshotter(options: snapshotOptions)
+                    snapshotter.start { snapshot, error in
+                        if let snapshot = snapshot {
+                            let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date(), image: snapshot.image)
+                            parentRegisteredLocations.append(newLocation)
+                        }
+                        showLocation = false  // 位置情報登録状態中はシートを閉じる
+                    }
+                } else {
+                    showLocation = false  // 位置情報登録状態中はシートを閉じる
                 }
-                showLocation = false  // 位置情報登録状態中はシートを閉じる
             }) {
                 Text("追加")
                     .foregroundColor(justRegisteredFirst ? .blue : .gray)  // 位置情報登録状態中は青色、そうでない場合は灰色

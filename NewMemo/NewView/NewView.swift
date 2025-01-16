@@ -16,6 +16,7 @@ struct RegisteredLocation: Identifiable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     let date: Date
+    let image: UIImage?  // 追加: 画像を保持するプロパティ
 }
 
 struct NewView: View {
@@ -478,8 +479,8 @@ struct NewView: View {
         showAlertFlag = true
     }
 
-    func addRegisteredLocation(name: String, coordinate: CLLocationCoordinate2D) {
-        let newLocation = RegisteredLocation(name: name, coordinate: coordinate, date: Date())
+    func addRegisteredLocation(name: String, coordinate: CLLocationCoordinate2D, image: UIImage?) {
+        let newLocation = RegisteredLocation(name: name, coordinate: coordinate, date: Date(), image: image)
         registeredLocations.append(newLocation)
     }
 }
