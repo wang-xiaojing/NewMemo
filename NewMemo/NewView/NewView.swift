@@ -11,6 +11,13 @@ import Photos
 import UIKit
 import MapKit
 
+struct RegisteredLocation: Identifiable {
+    let id = UUID()
+    let name: String
+    let coordinate: CLLocationCoordinate2D
+    let date: Date
+}
+
 struct NewView: View {
     // MARK: AudioView用
     @EnvironmentObject var audioRecorder: AudioRecorder
@@ -57,6 +64,8 @@ struct NewView: View {
     // 選択された画像をIdentifiableUIImage型に変更
     @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
+
+    @State private var registeredLocations: [RegisteredLocation] = []  // 登録された位置情報の配列
 
     enum EditAction: Identifiable {
         case delete
@@ -357,7 +366,7 @@ struct NewView: View {
             }
             .sheet(isPresented: $showLocation) {
                 // MapViewContainerを表示
-                MapViewContainer(showLocation: $showLocation)
+                MapViewContainer(showLocation: $showLocation, parentRegisteredLocations: $registeredLocations)
                     .edgesIgnoringSafeArea(.bottom)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.white.opacity(0.9))
@@ -467,6 +476,11 @@ struct NewView: View {
         alertTitle = title
         alertMessage = message
         showAlertFlag = true
+    }
+
+    func addRegisteredLocation(name: String, coordinate: CLLocationCoordinate2D) {
+        let newLocation = RegisteredLocation(name: name, coordinate: coordinate, date: Date())
+        registeredLocations.append(newLocation)
     }
 }
 

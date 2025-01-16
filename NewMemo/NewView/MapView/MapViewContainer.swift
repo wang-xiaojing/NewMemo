@@ -51,6 +51,7 @@ struct MapViewContainer: View {
     @State private var showAlreadyRegisteredAlertForSearch = false
     @State private var tempSearchItem: MKMapItem?
     @Binding var showLocation: Bool  // 位置情報画面の表示フラグ
+    @Binding var parentRegisteredLocations: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
 
     var body: some View {
         HStack {
@@ -64,6 +65,10 @@ struct MapViewContainer: View {
             Spacer()
             Button(action: {
                 // 追加ボタンが押された時の処理
+                if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
+                    let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date())
+                    parentRegisteredLocations.append(newLocation)
+                }
                 showLocation = false  // 位置情報登録状態中はシートを閉じる
             }) {
                 Text("追加")

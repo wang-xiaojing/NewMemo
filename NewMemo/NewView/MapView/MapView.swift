@@ -73,7 +73,6 @@ struct MapView: UIViewRepresentable {
         
         // ロングタップの位置情報が取得できた場合
         if let coordinate = longTapLocation, !justRegisteredSecond {   // ロングタップの座標が設定されている場合
-            // justRegisteredSecond = justRegisteredFirst ? true : false   // 問題箇所
             // 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
             // ロングタップの位置にピンを追加
