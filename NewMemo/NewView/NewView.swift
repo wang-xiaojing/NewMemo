@@ -250,16 +250,17 @@ struct NewView: View {
                             }
                             Spacer()  // 他のビューとの間隔を確保
                         }  // HStackの終了
-                        HStack {
+                        HStack {    // 登録した地点のキャプチャを表示する
                             if !registeredLocations.isEmpty {  // registeredLocationsが空でない場合に処理を実行
                                 ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
                                     HStack {
                                         ForEach(registeredLocations) { location in  // 配列のインデックスでループ
                                             if let image = location.image {
                                                 Image(uiImage: image)  // 画像を表示
-                                                    .resizable()
-                                                    .frame(width: 150, height: 150)  // 画像のサイズを設定
-                                                    .scaledToFit()
+                                                    // .resizable()
+                                                    .frame(width: 50, height: 50)  // 画像のサイズを設定
+                                                    .scaledToFill()  // 元画像の中心位置を中心とする
+                                                    .clipped()  // 画像をクリップ
                                                     .border(Color.gray, width: 1)
                                             }
                                         }
