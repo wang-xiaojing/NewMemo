@@ -50,9 +50,9 @@ class Coordinator: NSObject, MKMapViewDelegate {
         if gestureRecognizer.state == .began {
             if justRegisteredFirst {
                 // ロングタップの位置を取得
-                let locationX = gestureRecognizer.location(in: gestureRecognizer.view)
-                let coordinateX = (gestureRecognizer.view as! MKMapView)
-                    .convert(locationX, toCoordinateFrom: gestureRecognizer.view)
+                let location = gestureRecognizer.location(in: gestureRecognizer.view)
+                let coordinate = (gestureRecognizer.view as! MKMapView)
+                    .convert(location, toCoordinateFrom: gestureRecognizer.view)
                 
                 // アラートを作成
                 let alert = UIAlertController(
@@ -66,7 +66,7 @@ class Coordinator: NSObject, MKMapViewDelegate {
                 alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
                     self.showAlreadyRegisteredAlertForLongTap = false
                     self.justRegisteredFirst = false
-                    self.parent.longTapLocation = coordinateX
+                    self.parent.longTapLocation = coordinate
                     self.onLongTap()
                 })
                 
@@ -80,6 +80,7 @@ class Coordinator: NSObject, MKMapViewDelegate {
                 let location = gestureRecognizer.location(in: gestureRecognizer.view)
                 let coordinate = (gestureRecognizer.view as! MKMapView)
                     .convert(location, toCoordinateFrom: gestureRecognizer.view)
+                parent.longTapLocation = coordinate
                 // ロングタップの処理を実行
                 onLongTap()
             }
