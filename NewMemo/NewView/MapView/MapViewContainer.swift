@@ -164,7 +164,7 @@ struct MapViewContainer: View {
                     moveToPin()
                 },
                 onHereButtonClicked: {
-                    if justRegisteredFirst {
+                    if justRegisteredFirst {    // MARK: 登録済みかを判定
                         justRegisteredSecond = true
                         showAlreadyRegisteredAlertForHere = true
                     } else {
@@ -174,7 +174,7 @@ struct MapViewContainer: View {
                     }
                 },
                 onRemovePinButtonClicked: {
-                    if justRegisteredFirst {
+                    if justRegisteredFirst {     // MARK: 登録済みかを判定
                         justRegisteredSecond = true
                         showAlreadyRegisteredAlertForRemove = true
                     } else {
@@ -195,7 +195,7 @@ struct MapViewContainer: View {
                 },
                 onRegisterButtonClicked: { // 変更: 位置登録画面を表示する
                     registerButtonClickCount += 1
-                    if hereLocation == nil && searchLocation == nil && longTapLocation == nil {
+                    if hereLocation == nil && searchLocation == nil && longTapLocation == nil {      // MARK: Pinが設置されたかを判定
                         showNoPinAlert = true
                     } else {
                         isRegisterViewPresented = true
@@ -245,8 +245,6 @@ struct MapViewContainer: View {
         }
         .alert("すでに登録した場所が存在します。新しい場所に移動しますか？", isPresented: $showAlreadyRegisteredAlertForHere) {
             Button("Cancel", role: .cancel) {
-                // selectedSearchResult = nil
-                // searchResults.removeAll()
                 showAlreadyRegisteredAlertForHere = false
             }
             Button("OK") {
@@ -383,7 +381,7 @@ struct MapViewContainer: View {
 
     // ピンの位置に移動するメソッド
     func moveToPin() {
-        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
+        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation { // MARK: Pinが設置されたかを判定
             let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
             let region = MKCoordinateRegion(center: coordinate, span: span) // 表示領域を設定
             NotificationCenter.default.post(name: .moveToPin, object: region)
@@ -392,7 +390,7 @@ struct MapViewContainer: View {
     
     // ピンの位置を登録するメソッド
     func registerLocation() {
-        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
+        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {     // MARK: Pinが設置されたかを判定
             // 全ピンを消去
             // hereLocation = nil
             // searchLocation = nil

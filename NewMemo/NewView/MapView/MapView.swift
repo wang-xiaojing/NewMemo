@@ -78,7 +78,7 @@ struct MapView: UIViewRepresentable {
             // ロングタップの位置にピンを追加
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            if justRegisteredFirst {
+            if justRegisteredFirst {    // MARK: 登録済みかを判定
                 if let selectedResult = longTapResult {
                     annotation.title = selectedResult.name
                     annotation.subtitle = "登録済み"
@@ -101,23 +101,21 @@ struct MapView: UIViewRepresentable {
                 uiView.setRegion(region, animated: true) // 地図の表示領域を更新
             }
             // 検索結果座標にピンを追加
-            // if let selectedResult = selectedSearchResult { // 修正: isZoomingをチェック
-                let annotation = MKPointAnnotation() // アノテーションを作成
-                annotation.coordinate = coordinate // アノテーションの座標を設定
-                if justRegisteredFirst {
-                    if let selectedResult = selectedSearchResult {
-                        annotation.title = selectedResult.name // アノテーションのタイトルを設定
-                        annotation.subtitle = "登録済み"
-                    } else {
-                        annotation.title = "Current"
-                        annotation.subtitle = "未登録"
-                    }
+            let annotation = MKPointAnnotation() // アノテーションを作成
+            annotation.coordinate = coordinate // アノテーションの座標を設定
+            if justRegisteredFirst {    // MARK: 登録済みかを判定
+                if let selectedResult = selectedSearchResult {
+                    annotation.title = selectedResult.name // アノテーションのタイトルを設定
+                    annotation.subtitle = "登録済み"
                 } else {
                     annotation.title = "Current"
                     annotation.subtitle = "未登録"
                 }
-                uiView.addAnnotation(annotation) // アノテーションをマップに追加
-            // }
+            } else {
+                annotation.title = "Current"
+                annotation.subtitle = "未登録"
+            }
+            uiView.addAnnotation(annotation) // アノテーションをマップに追加
         } else if let coordinate = hereLocation, !justRegisteredSecond {       // 現在地の座標が設定されている場合
             // 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
@@ -130,7 +128,7 @@ struct MapView: UIViewRepresentable {
             // 現在地にピンを追加
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            if justRegisteredFirst {
+            if justRegisteredFirst {    // MARK: 登録済みかを判定
                 if let selectedResult = hereResult {
                     annotation.title = selectedResult.name // アノテーションのタイトルを設定
                     annotation.subtitle = "登録済み"
