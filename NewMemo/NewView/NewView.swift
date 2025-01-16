@@ -257,9 +257,8 @@ struct NewView: View {
                                         ForEach(registeredLocations) { location in  // 配列のインデックスでループ
                                             if let image = location.image {
                                                 Image(uiImage: image)  // 画像を表示
-                                                    // .resizable()
-                                                    .frame(width: 50, height: 50)  // 画像のサイズを設定
-                                                    .scaledToFill()  // 元画像の中心位置を中心とする
+                                                    .offset(y: -25)  // 元画像の中心位置のY座標を-25を中心位置とする
+                                                    .frame(width: 150, height: 150)  // 画像のサイズを設定
                                                     .clipped()  // 画像をクリップ
                                                     .border(Color.gray, width: 1)
                                             }
