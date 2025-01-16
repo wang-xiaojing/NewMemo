@@ -250,6 +250,23 @@ struct NewView: View {
                             }
                             Spacer()  // 他のビューとの間隔を確保
                         }  // HStackの終了
+                        HStack {
+                            if !registeredLocations.isEmpty {  // registeredLocationsが空でない場合に処理を実行
+                                ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
+                                    HStack {
+                                        ForEach(registeredLocations) { location in  // 配列のインデックスでループ
+                                            if let image = location.image {
+                                                Image(uiImage: image)  // 画像を表示
+                                                    .resizable()
+                                                    .frame(width: 150, height: 150)  // 画像のサイズを設定
+                                                    .scaledToFit()
+                                                    .border(Color.gray, width: 1)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     .disabled(showAudioOverlayWindow)
                     // MARK: 録音処理
