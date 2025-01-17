@@ -54,24 +54,19 @@ struct MapViewContainer: View {
     @Binding var registeredLocationArray: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
     @State private var initialLocation: CLLocationCoordinate2D? // 追加: 初期表示位置を保持するプロパティ
     @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
-
-    // init(showLocation: Binding<Bool>,
-    //      registeredLocationArray: Binding<[RegisteredLocation]>,
-    //      initialLocation: CLLocationCoordinate2D? = nil) {
-    //     print("Debug4 initialLocation = \(String(describing: initialLocation))")
-    //     self._showLocation = showLocation
-    //     self._registeredLocationArray = registeredLocationArray
-    //     self._initialLocation = State(initialValue: initialLocation)
-    // }
+    @State private var memoLocation: CLLocationCoordinate2D?
 
     init(showLocation: Binding<Bool>,
          registeredLocationArray: Binding<[RegisteredLocation]>,
          selectedRegisteredLocation: RegisteredLocation? = nil) {
-        print("Debug4 RegisteredLocation = \(String(describing: selectedRegisteredLocation))")
         self._showLocation = showLocation
         self._registeredLocationArray = registeredLocationArray
         self._initialLocation = State(initialValue: selectedRegisteredLocation?.coordinate)
-    }
+        self._selectedRegisteredLocation = State(initialValue: selectedRegisteredLocation)
+        if let location = selectedRegisteredLocation?.coordinate {
+            self._memoLocation = State(initialValue: location)
+        }
+ }
 
     var body: some View {
         HStack {
@@ -125,6 +120,7 @@ struct MapViewContainer: View {
                 hereLocation: $hereLocation,
                 searchLocation: $searchLocation,
                 longTapLocation: $longTapLocation,
+                memoLocation: $memoLocation,  // 追加
                 shouldShowUserLocationPin: $shouldShowUserLocationPin,
                 shouldShowSearchLocationPin: $shouldShowSearchLocationPin,
                 shouldShowLongTapLocationPin: $shouldShowLongTapLocationPin,
@@ -184,7 +180,7 @@ struct MapViewContainer: View {
                     moveToPin()
                 },
                 onHereButtonClicked: {
-                    if justRegisteredFirst {    // MARK: 登録済みかを判定
+                    if (justRegisteredFirst) {    // MARK: 登録済みかを判定
                         justRegisteredSecond = true
                         showAlreadyRegisteredAlertForHere = true
                     } else {
@@ -194,7 +190,7 @@ struct MapViewContainer: View {
                     }
                 },
                 onRemovePinButtonClicked: {
-                    if justRegisteredFirst {     // MARK: 登録済みかを判定
+                    if (justRegisteredFirst) {     // MARK: 登録済みかを判定
                         justRegisteredSecond = true
                         showAlreadyRegisteredAlertForRemove = true
                     } else {
@@ -265,8 +261,29 @@ struct MapViewContainer: View {
                 let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
                 let region = MKCoordinateRegion(center: initialLocation, span: span) // 表示領域を設定
                 NotificationCenter.default.post(name: .moveToPin, object: region)
+                if let selectedLocation = selectedRegisteredLocation {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = selectedLocation.coordinate
+                        annotation.title = selectedLocation.name
+                        annotation.subtitle = "登録済み"
+                        NotificationCenter.default.post(name: .addAnnotation, object: annotation)
+                    }
+                }
             } else {
                 getHereLocation()
+            }
+            if let location = memoLocation, !justRegisteredSecond {
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                let region = MKCoordinateRegion(center: location, span: span)
+                NotificationCenter.default.post(name: .moveToPin, object: region)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = location
+                    annotation.title = registerLocationName.isEmpty ? "新規" : registerLocationName
+                    annotation.subtitle = justRegisteredFirst ? "登録済み" : "未登録"
+                    NotificationCenter.default.post(name: .addAnnotation, object: annotation)
+                }
             }
         }
         .alert("すでに登録した場所が存在します。新しい場所に移動しますか？", isPresented: $showAlreadyRegisteredAlertForHere) {

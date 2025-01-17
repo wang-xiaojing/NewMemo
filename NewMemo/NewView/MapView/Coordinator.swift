@@ -72,7 +72,6 @@ class Coordinator: NSObject, MKMapViewDelegate {
                 
                 // UIKitのビューコントローラを取得してアラートを表示
                 if let rootVC = topViewController() {
-                    // print("rootVC is nil: \(rootVC == nil)")
                     rootVC.present(alert, animated: true)
                 }
             } else {

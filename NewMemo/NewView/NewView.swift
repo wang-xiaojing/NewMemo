@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 import Photos
-import UIKit
+// import UIKit
 import MapKit
 
 struct RegisteredLocation: Identifiable {
@@ -68,7 +68,7 @@ struct NewView: View {
 
     @State private var registeredLocationArray: [RegisteredLocation] = []  // 登録された位置情報の配列
     @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
-
+    @State private var tapLocation: CGPoint = .zero
     enum EditAction: Identifiable {
         case delete
         case save
@@ -251,25 +251,40 @@ struct NewView: View {
                                 }
                             }
                             Spacer()  // 他のビューとの間隔を確保
-                        }  // HStackの終了
-                        HStack {    // 登録した地点のキャプチャを表示する
-                            if !registeredLocationArray.isEmpty {  // registeredLocationsが空でない場合に処理を実行
-                                ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
+                        }
+                        HStack {    // memoした地点のキャプチャを表示する
+                            if !registeredLocationArray.isEmpty {
+                                ScrollView(.horizontal) {
                                     HStack {
-                                        ForEach(registeredLocationArray) { location in  // 配列のインデックスでループ
+                                        // FIXME: 順番調整禁止！
+                                        ForEach(registeredLocationArray.indices, id: \.self) { index in
+                                            let location = registeredLocationArray[index]
                                             if let image = location.image {
-                                                Image(uiImage: image)  // 登録した地点のキャプチャ画像を表示
-                                                    .offset(y: -25)  // 元画像の中心位置のY座標を-25を中心位置とする
-                                                    .frame(width: 150, height: 150)  // 画像のサイズを設定
-                                                    .clipped()  // 画像をクリップ
-                                                    .border(Color.gray, width: 1)
-                                                    .onTapGesture {
-                                                        selectedRegisteredLocation = location // 追加: タップされた地点を選択
-                                                        showLocation = true // 位置情報画面を非表示
-                                                        print("Debug2 selectedRegisteredLocation = \(String(describing: selectedRegisteredLocation))")
+                                                Button(action: {
+                                                    selectedRegisteredLocation = registeredLocationArray[index]
+                                                    showLocation = true
+                                                }) {
+                                                    VStack(spacing: 5) {
+                                                        Image(uiImage: image)
+                                                            .padding()
+                                                            .offset(y: -25)
+                                                            .clipped()
+                                                            .frame(width: 150, height: 150)
+                                                            .border(Color.clear, width: 0)
+                                                            .background(Color.clear)
+                                                        Text("\(location.name)")
+                                                            .font(.caption)
+                                                            .fontWeight(.light)
+                                                            .foregroundColor(.black)
+                                                            .lineLimit(1)
+                                                            .frame(maxWidth: 150)
+                                                            .background(Color.white)
                                                     }
+                                                }
+                                                .cornerRadius(1)
                                             }
                                         }
+                                        // FIXME: 順番調整禁止！
                                     }
                                 }
                             }
@@ -388,21 +403,16 @@ struct NewView: View {
             // }
             .sheet(isPresented: $showLocation) {
                 if let selectedLocation = selectedRegisteredLocation {
-                    // FIXME: for debug.
-                    // Text("Debug3 selectedRegisteredLocation")
-                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray, selectedRegisteredLocation: selectedLocation)
-                        // .edgesIgnoringSafeArea(.bottom)
-                        // .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        // .background(Color.white.opacity(0.9))
-                        // .edgesIgnoringSafeArea(.all)
+                    MapViewContainer(
+                        showLocation: $showLocation,
+                        registeredLocationArray: $registeredLocationArray,
+                        selectedRegisteredLocation: selectedLocation
+                    )
                 } else {
-                    // FIXME: for debug.
-                    // Text("Debug4 selectedRegisteredLocation")
-                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray)
-                        // .edgesIgnoringSafeArea(.bottom)
-                        // .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        // .background(Color.white.opacity(0.9))
-                        // .edgesIgnoringSafeArea(.all)
+                    MapViewContainer(
+                        showLocation: $showLocation,
+                        registeredLocationArray: $registeredLocationArray
+                    )
                 }
             }
             .alert(isPresented: $showAlertFlag) {
@@ -512,11 +522,6 @@ struct NewView: View {
         alertTitle = title
         alertMessage = message
         showAlertFlag = true
-    }
-
-    func addRegisteredLocation(name: String, coordinate: CLLocationCoordinate2D, image: UIImage?) {
-        let newLocation = RegisteredLocation(name: name, coordinate: coordinate, date: Date(), image: image)
-        registeredLocationArray.append(newLocation)
     }
 }
 

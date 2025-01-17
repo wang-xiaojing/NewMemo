@@ -16,6 +16,7 @@ struct MapView: UIViewRepresentable {
     @Binding var hereLocation: CLLocationCoordinate2D?
     @Binding var searchLocation: CLLocationCoordinate2D?
     @Binding var longTapLocation: CLLocationCoordinate2D?
+    @Binding var memoLocation: CLLocationCoordinate2D?
     @Binding var shouldShowUserLocationPin: Bool
     @Binding var shouldShowSearchLocationPin: Bool // 検索結果座標にピンを表示するかどうかを保持するプロパティ
     @Binding var shouldShowLongTapLocationPin: Bool // ロングタップ座標にピンを表示するかどうかを保持するプロパティ
@@ -68,6 +69,12 @@ struct MapView: UIViewRepresentable {
         NotificationCenter.default.addObserver(forName: .moveToPin, object: nil, queue: .main) { notification in
             if let region = notification.object as? MKCoordinateRegion {
                 uiView.setRegion(region, animated: true)
+            }
+        }
+
+        NotificationCenter.default.addObserver(forName: .addAnnotation, object: nil, queue: .main) { notification in
+            if let annotation = notification.object as? MKPointAnnotation {
+                uiView.addAnnotation(annotation)
             }
         }
         
@@ -141,6 +148,23 @@ struct MapView: UIViewRepresentable {
                 annotation.subtitle = "未登録"
             }
             uiView.addAnnotation(annotation)
+        } else if let coordinate = memoLocation, !justRegisteredSecond {
+            uiView.removeAnnotations(uiView.annotations)
+            if !isZooming {
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                let region = MKCoordinateRegion(center: coordinate, span: span)
+                uiView.setRegion(region, animated: true)
+            }
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            if justRegisteredFirst {
+                annotation.title = hereResult?.name ?? "Saved"
+                annotation.subtitle = "登録済み"
+            } else {
+                annotation.title = "New"
+                annotation.subtitle = "未登録"
+            }
+            uiView.addAnnotation(annotation)
         } else if let coordinate = locationManager.location?.coordinate, !justRegisteredSecond {       // 画面にピンが置かれていない状態）
             // 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
@@ -158,4 +182,5 @@ extension Notification.Name {
     static let zoomIn = Notification.Name("zoomIn")
     static let zoomOut = Notification.Name("zoomOut")
     static let moveToPin = Notification.Name("moveToPin")
+    static let addAnnotation = Notification.Name("addAnnotation")
 }
