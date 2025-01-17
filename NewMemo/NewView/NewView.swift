@@ -39,7 +39,7 @@ struct NewView: View {
     @State private var showPhoto: Bool = false  // フォトライブラリ画面の表示フラグ
     @State private var showTagSelector: Bool = false  // タグセレクターの表示フラグ
     @State private var showLocation: Bool = false  // 位置情報画面の表示フラグ
-    
+
     @State private var fontSize: CGFloat = 14  // フォントサイズの初期値
     @State private var fontColor: Color = .black  // フォントカラーの初期値
     @State private var backgroundColor: Color = .white  // テキストエディタの背景色
@@ -66,7 +66,8 @@ struct NewView: View {
     @State private var selectedImage: IdentifiableUIImage? = nil
     @State private var isDisplayingImage: Bool = false  // シート表示フラグ
 
-    @State private var registeredLocations: [RegisteredLocation] = []  // 登録された位置情報の配列
+    @State private var registeredLocationArray: [RegisteredLocation] = []  // 登録された位置情報の配列
+    @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
 
     enum EditAction: Identifiable {
         case delete
@@ -164,8 +165,9 @@ struct NewView: View {
                             }) {
                                 Image(systemName: "tag")  // タグのアイコン
                             }
-                            Button(action: {
+                            Button(action: {    // globe Button
                                 showLocation = true  // 位置情報画面を表示
+                                selectedRegisteredLocation = nil    // 選択された登録済み地点を保持するプロパティ
                             }) {
                                 Image(systemName: "globe")  // 地球のアイコン
                             }
@@ -251,16 +253,21 @@ struct NewView: View {
                             Spacer()  // 他のビューとの間隔を確保
                         }  // HStackの終了
                         HStack {    // 登録した地点のキャプチャを表示する
-                            if !registeredLocations.isEmpty {  // registeredLocationsが空でない場合に処理を実行
+                            if !registeredLocationArray.isEmpty {  // registeredLocationsが空でない場合に処理を実行
                                 ScrollView(.horizontal) {  // 横方向にスクロール可能なScrollViewを使用
                                     HStack {
-                                        ForEach(registeredLocations) { location in  // 配列のインデックスでループ
+                                        ForEach(registeredLocationArray) { location in  // 配列のインデックスでループ
                                             if let image = location.image {
                                                 Image(uiImage: image)  // 登録した地点のキャプチャ画像を表示
                                                     .offset(y: -25)  // 元画像の中心位置のY座標を-25を中心位置とする
                                                     .frame(width: 150, height: 150)  // 画像のサイズを設定
                                                     .clipped()  // 画像をクリップ
                                                     .border(Color.gray, width: 1)
+                                                    .onTapGesture {
+                                                        selectedRegisteredLocation = location // 追加: タップされた地点を選択
+                                                        showLocation = true // 位置情報画面を非表示
+                                                        print("Debug2 selectedRegisteredLocation = \(String(describing: selectedRegisteredLocation))")
+                                                    }
                                             }
                                         }
                                     }
@@ -379,16 +386,27 @@ struct NewView: View {
             //         }
             //     }
             // }
+            .sheet(isPresented: $showLocation) {
+                if let selectedLocation = selectedRegisteredLocation {
+                    // FIXME: for debug.
+                    // Text("Debug3 selectedRegisteredLocation")
+                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray, initialLocation: selectedLocation.coordinate)
+                        // .edgesIgnoringSafeArea(.bottom)
+                        // .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        // .background(Color.white.opacity(0.9))
+                        // .edgesIgnoringSafeArea(.all)
+                } else {
+                    // FIXME: for debug.
+                    // Text("Debug4 selectedRegisteredLocation")
+                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray)
+                        // .edgesIgnoringSafeArea(.bottom)
+                        // .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        // .background(Color.white.opacity(0.9))
+                        // .edgesIgnoringSafeArea(.all)
+                }
+            }
             .alert(isPresented: $showAlertFlag) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-            }
-            .sheet(isPresented: $showLocation) {
-                // MapViewContainerを表示
-                MapViewContainer(showLocation: $showLocation, parentRegisteredLocations: $registeredLocations)
-                    .edgesIgnoringSafeArea(.bottom)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.9))
-                    .edgesIgnoringSafeArea(.all)
             }
         }
     }
@@ -471,7 +489,7 @@ struct NewView: View {
                         PHAssetChangeRequest.creationRequestForAsset(from: image)
                     }, completionHandler: { success, error in
                         DispatchQueue.main.async {
-                            if success {
+                            if (success) {
                                 // 保存成功時の処理
                                 showAlert(title: "成功", message: "画像を写真に保存しました")
                             } else {
@@ -498,7 +516,7 @@ struct NewView: View {
 
     func addRegisteredLocation(name: String, coordinate: CLLocationCoordinate2D, image: UIImage?) {
         let newLocation = RegisteredLocation(name: name, coordinate: coordinate, date: Date(), image: image)
-        registeredLocations.append(newLocation)
+        registeredLocationArray.append(newLocation)
     }
 }
 

@@ -51,7 +51,14 @@ struct MapViewContainer: View {
     @State private var showAlreadyRegisteredAlertForSearch = false
     @State private var tempSearchItem: MKMapItem?
     @Binding var showLocation: Bool  // 位置情報画面の表示フラグ
-    @Binding var parentRegisteredLocations: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
+    @Binding var registeredLocationArray: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
+    @State private var initialLocation: CLLocationCoordinate2D? // 追加: 初期表示位置を保持するプロパティ
+
+    init(showLocation: Binding<Bool>, registeredLocationArray: Binding<[RegisteredLocation]>, initialLocation: CLLocationCoordinate2D? = nil) {
+        self._showLocation = showLocation
+        self._registeredLocationArray = registeredLocationArray
+        self._initialLocation = State(initialValue: initialLocation)
+    }
 
     var body: some View {
         HStack {
@@ -83,7 +90,7 @@ struct MapViewContainer: View {
                     }
                     // 新しい登録位置+情報の作成
                     let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date(), image: image)
-                    parentRegisteredLocations.append(newLocation)
+                    registeredLocationArray.append(newLocation)
                     showLocation = false  // 位置情報登録状態中はシートを閉じる
                 } else {
                     showLocation = false  // 位置情報登録状態中はシートを閉じる
@@ -241,7 +248,13 @@ struct MapViewContainer: View {
             }
         }
         .onAppear {
-            getHereLocation()
+            if let initialLocation = initialLocation {
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
+                let region = MKCoordinateRegion(center: initialLocation, span: span) // 表示領域を設定
+                NotificationCenter.default.post(name: .moveToPin, object: region)
+            } else {
+                getHereLocation()
+            }
         }
         .alert("すでに登録した場所が存在します。新しい場所に移動しますか？", isPresented: $showAlreadyRegisteredAlertForHere) {
             Button("Cancel", role: .cancel) {
