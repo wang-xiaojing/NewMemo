@@ -65,6 +65,8 @@ struct MapViewContainer: View {
         self._selectedRegisteredLocation = State(initialValue: selectedRegisteredLocation)
         if let location = selectedRegisteredLocation?.coordinate {
             self._memoLocation = State(initialValue: location)
+            self._justRegisteredFirst = State(initialValue: true)    // 問題箇所
+            self._justRegisteredSecond = State(initialValue: true)   // 問題箇所
         }
  }
 
