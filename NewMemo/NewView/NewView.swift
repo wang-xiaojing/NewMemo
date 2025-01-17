@@ -390,7 +390,7 @@ struct NewView: View {
                 if let selectedLocation = selectedRegisteredLocation {
                     // FIXME: for debug.
                     // Text("Debug3 selectedRegisteredLocation")
-                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray, initialLocation: selectedLocation.coordinate)
+                    MapViewContainer(showLocation: $showLocation, registeredLocationArray: $registeredLocationArray, selectedRegisteredLocation: selectedLocation)
                         // .edgesIgnoringSafeArea(.bottom)
                         // .frame(maxWidth: .infinity, maxHeight: .infinity)
                         // .background(Color.white.opacity(0.9))

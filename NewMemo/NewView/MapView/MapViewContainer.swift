@@ -53,11 +53,24 @@ struct MapViewContainer: View {
     @Binding var showLocation: Bool  // 位置情報画面の表示フラグ
     @Binding var registeredLocationArray: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
     @State private var initialLocation: CLLocationCoordinate2D? // 追加: 初期表示位置を保持するプロパティ
+    @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
 
-    init(showLocation: Binding<Bool>, registeredLocationArray: Binding<[RegisteredLocation]>, initialLocation: CLLocationCoordinate2D? = nil) {
+    // init(showLocation: Binding<Bool>,
+    //      registeredLocationArray: Binding<[RegisteredLocation]>,
+    //      initialLocation: CLLocationCoordinate2D? = nil) {
+    //     print("Debug4 initialLocation = \(String(describing: initialLocation))")
+    //     self._showLocation = showLocation
+    //     self._registeredLocationArray = registeredLocationArray
+    //     self._initialLocation = State(initialValue: initialLocation)
+    // }
+
+    init(showLocation: Binding<Bool>,
+         registeredLocationArray: Binding<[RegisteredLocation]>,
+         selectedRegisteredLocation: RegisteredLocation? = nil) {
+        print("Debug4 RegisteredLocation = \(String(describing: selectedRegisteredLocation))")
         self._showLocation = showLocation
         self._registeredLocationArray = registeredLocationArray
-        self._initialLocation = State(initialValue: initialLocation)
+        self._initialLocation = State(initialValue: selectedRegisteredLocation?.coordinate)
     }
 
     var body: some View {
