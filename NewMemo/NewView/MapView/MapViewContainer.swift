@@ -68,6 +68,20 @@ struct MapViewContainer: View {
             self._justRegisteredFirst = State(initialValue: true)    // 問題箇所
             self._justRegisteredSecond = State(initialValue: true)   // 問題箇所
         }
+        if let searchLocation = searchLocation {
+            print("Debug-200 searchLocation: \(searchLocation)")
+            self._searchLocation = State(initialValue: nil)
+        }
+        if let hereLocation = hereLocation {
+            print("Debug-200 hereLocation: \(hereLocation)")
+            self._hereLocation = State(initialValue: nil)
+        }
+        if let longTapLocation = longTapLocation {
+            print("Debug-200 longTapLocation: \(longTapLocation)")
+            self._longTapLocation = State(initialValue: nil)
+        }
+        
+        
  }
 
     var body: some View {
@@ -213,7 +227,7 @@ struct MapViewContainer: View {
                 },
                 onRegisterButtonClicked: { // 変更: 位置登録画面を表示する
                     registerButtonClickCount += 1
-                    if hereLocation == nil && searchLocation == nil && longTapLocation == nil {      // MARK: Pinが設置されたかを判定
+                    if hereLocation == nil && searchLocation == nil && longTapLocation == nil && memoLocation == nil {      // MARK: Pinが設置されたかを判定
                         showNoPinAlert = true
                     } else {
                         isRegisterViewPresented = true
@@ -411,6 +425,7 @@ struct MapViewContainer: View {
         hereLocation = nil
         searchLocation = nil
         longTapLocation = nil
+        memoLocation = nil
         searchResults.removeAll()
     }
     
@@ -426,7 +441,7 @@ struct MapViewContainer: View {
 
     // ピンの位置に移動するメソッド
     func moveToPin() {
-        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation { // MARK: Pinが設置されたかを判定
+        if let coordinate = searchLocation ?? hereLocation ?? longTapLocation ?? memoLocation{ // MARK: Pinが設置されたかを判定
             let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
             let region = MKCoordinateRegion(center: coordinate, span: span) // 表示領域を設定
             NotificationCenter.default.post(name: .moveToPin, object: region)
