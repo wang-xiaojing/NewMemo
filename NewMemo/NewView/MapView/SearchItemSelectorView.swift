@@ -4,8 +4,8 @@ import MapKit
 struct SearchItemSelectorView: View {
     @Binding var searchResults: [MKMapItem]
     @Binding var selectedSearchResult: MKMapItem?
-    var onCancel: () -> Void
-    var onConfirm: () -> Void
+    var onCancelOfSearchItemSelectorView: () -> Void
+    var onConfirmOfSearchItemSelectorView: () -> Void
 
     var body: some View {
         VStack {
@@ -23,7 +23,7 @@ struct SearchItemSelectorView: View {
                 }
             }
             HStack {
-                Button(action: onCancel) {
+                Button(action: onCancelOfSearchItemSelectorView) {
                     Text("Cancel")
                         .frame(maxWidth: .infinity)
                 }
@@ -32,9 +32,9 @@ struct SearchItemSelectorView: View {
                 
                 Button(action: {
                     if selectedSearchResult == nil {
-                        onCancel() // 選択されていない場合はキャンセルと同じ動作
+                        onCancelOfSearchItemSelectorView() // 選択されていない場合はキャンセルと同じ動作
                     } else {
-                        onConfirm()
+                        onConfirmOfSearchItemSelectorView()
                     }
                 }) {
                     Text("OK")

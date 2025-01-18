@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 struct RegisterLocationView: View {
     @Binding var locationName: String
@@ -8,11 +9,18 @@ struct RegisterLocationView: View {
     @Binding var justRegisteredFirst: Bool // 追加: justRegisteredFirstをバインディングプロパティとして追加
     @State private var showAlreadyRegisteredAlert = false // 追加: アラート表示状態を管理するプロパティ
 
+    @Binding private var hereLocation: CLLocationCoordinate2D?
+    @Binding private var searchLocation: CLLocationCoordinate2D?
+    @Binding private var longTapLocation: CLLocationCoordinate2D?
+
     var body: some View {
         VStack {
             Spacer()
             VStack(/*spacing: 20*/) {
-                TextField("Enter location name", text: $locationName)
+                TextField(longTapLocation ?? annotation.title :
+                          searchLocation ?? annotation.title :
+                          hereLocation ?? annotation.title :
+                          "Enter location name", text: $locationName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                     .submitLabel(.done) // キーボードのリターンキーを「Done」に変更

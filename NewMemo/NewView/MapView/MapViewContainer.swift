@@ -159,10 +159,10 @@ struct MapViewContainer: View {
                     .presentationDetents([.height(searchBarHeight)])
             }
             .sheet(isPresented: $isSearchItemSelectorPresented) {
-                SearchItemSelectorView(searchResults: $searchResults, selectedSearchResult: $selectedSearchResult, onCancel: {
+                SearchItemSelectorView(searchResults: $searchResults, selectedSearchResult: $selectedSearchResult, onCancelOfSearchItemSelectorView: {
                     selectedSearchResult = nil // 検索結果を無効にする
                     isSearchItemSelectorPresented = false
-                }, onConfirm: {
+                }, onConfirmOfSearchItemSelectorView: {
                     if let selectedResult = selectedSearchResult {
                         if justRegisteredFirst {
                             tempSearchItem = selectedResult
@@ -265,6 +265,9 @@ struct MapViewContainer: View {
                             isRegisterViewPresented = false
                         }
                     },
+                    hereLocation: $hereLocation,
+                    searchLocation: $searchLocation,
+                    longTapLocation: $longTapLocation,
                     isRegisterViewPresented: $isRegisterViewPresented, // 追加: isRegisterViewPresentedを渡す
                     justRegisteredFirst: $justRegisteredFirst // 追加: justRegisteredFirstを渡す
                 )
