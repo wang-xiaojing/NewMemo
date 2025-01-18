@@ -24,6 +24,7 @@ struct MapView: UIViewRepresentable {
     @Binding var justRegisteredFirst: Bool // 追加
     @Binding var justRegisteredSecond: Bool // 追加
     @Binding var showAlreadyRegisteredAlertForLongTap: Bool // 追加
+    @Binding var annotationTitle: String? // 追加
 
     var onLongTap: () -> Void
     
@@ -86,19 +87,25 @@ struct MapView: UIViewRepresentable {
             // ロングタップの位置にピンを追加
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            if justRegisteredFirst {    // MARK: 登録済みかを判定
                 if let selectedResult = longTapResult {
                     annotation.title = selectedResult.name
-                    annotation.subtitle = "登録済み"
+                    if justRegisteredFirst {    // MARK: 登録済みかを判定
+                        annotation.subtitle = "登録済み"
+                    } else {
+                        annotation.subtitle = "未登録"
+                    }
                 } else {
-                    annotation.title = "Selected"
-                    annotation.subtitle = "未登録"
+                    if justRegisteredFirst {    // MARK: 登録済みかを判定
+                        // annotation.title = ""
+                        annotation.subtitle = "登録済み"
+                    } else {
+                        annotation.title = ""
+                        annotation.subtitle = "未登録"
+                    }
                 }
-            } else {
-                annotation.title = "Selected"
-                annotation.subtitle = "未登録"
-            }
             uiView.addAnnotation(annotation)
+            annotationTitle = annotation.title
+            print("Debug annotationTitle 1 = \(annotationTitle)")
         } else if let coordinate = searchLocation, !justRegisteredSecond {     // 検索結果の座標が設定されている場合
             // 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
@@ -111,17 +118,21 @@ struct MapView: UIViewRepresentable {
             // 検索結果座標にピンを追加
             let annotation = MKPointAnnotation() // アノテーションを作成
             annotation.coordinate = coordinate // アノテーションの座標を設定
-            if justRegisteredFirst {    // MARK: 登録済みかを判定
-                if let selectedResult = selectedSearchResult {
-                    annotation.title = selectedResult.name // アノテーションのタイトルを設定
+            if let selectedResult = selectedSearchResult {
+                annotation.title = selectedResult.name // アノテーションのタイトルを設定
+                if justRegisteredFirst {    // MARK: 登録済みかを判定
                     annotation.subtitle = "登録済み"
                 } else {
-                    annotation.title = "Current"
                     annotation.subtitle = "未登録"
                 }
             } else {
-                annotation.title = "Current"
-                annotation.subtitle = "未登録"
+                if justRegisteredFirst {    // MARK: 登録済みかを判定
+                    // annotation.title = ""
+                    annotation.subtitle = "登録済み"
+                } else {
+                    annotation.title = ""
+                    annotation.subtitle = "未登録"
+                }
             }
             uiView.addAnnotation(annotation) // アノテーションをマップに追加
         } else if let coordinate = hereLocation, !justRegisteredSecond {       // 現在地の座標が設定されている場合
@@ -149,6 +160,8 @@ struct MapView: UIViewRepresentable {
                 annotation.subtitle = "未登録"
             }
             uiView.addAnnotation(annotation)
+            annotationTitle = annotation.title
+            print("Debug annotationTitle 2 = \(annotationTitle)")
         } else if let coordinate = memoLocation, !justRegisteredSecond {
             uiView.removeAnnotations(uiView.annotations)
             if !isZooming {
@@ -166,6 +179,8 @@ struct MapView: UIViewRepresentable {
                 annotation.subtitle = "未登録"
             }
             uiView.addAnnotation(annotation)
+            annotationTitle = annotation.title
+            print("Debug annotationTitle 3 = \(annotationTitle)")
         } else if let coordinate = locationManager.location?.coordinate, !justRegisteredSecond {       // 画面にピンが置かれていない状態）
             // 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)

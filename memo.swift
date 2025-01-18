@@ -29,8 +29,13 @@
 // (ここでcommit:f9095756e7751535adcc4d2640c65dda1d7a6e98)
 //                 LongTapでPin設置：NG（現象として、Pinの表示だけできてないようです）
 //                                  -> OK!
-// (ここでcommit)
+// (ここでcommit:f8c0b663d7bbd81048178d33b68790f3768ca43a)
+//　（１）検索した結果を.nameが nil ではなければ、RegisterLocationViewのTextFieldの初期値として設定しています。
+// onAppear修飾子を使用して、ビューが表示されるときに.nameを取得する。
+// これにより、ユーザーが入力を開始する前に.nameがテキストフィールドに表示されます。
+// （２）TextField が未入力または空の場合に OK ボタンと Done キーボードボタンを無効にします。
+//
+// (ここでcommit:)
 //
 //
-// MapViewContainerおよび関連の処理 // search, hear,
-//
+//　FIXME: 解析必要： func search(completion: @escaping () -> Void) {

@@ -9,23 +9,26 @@ struct RegisterLocationView: View {
     @Binding var justRegisteredFirst: Bool // 追加: justRegisteredFirstをバインディングプロパティとして追加
     @State private var showAlreadyRegisteredAlert = false // 追加: アラート表示状態を管理するプロパティ
 
-    @Binding private var hereLocation: CLLocationCoordinate2D?
-    @Binding private var searchLocation: CLLocationCoordinate2D?
-    @Binding private var longTapLocation: CLLocationCoordinate2D?
+    @Binding var hereLocation: CLLocationCoordinate2D?
+    @Binding var searchLocation: CLLocationCoordinate2D?
+    @Binding var longTapLocation: CLLocationCoordinate2D?
+    @Binding var annotationTitle: String? // 変更: String? に変更
 
     var body: some View {
         VStack {
             Spacer()
             VStack(/*spacing: 20*/) {
-                TextField(longTapLocation ?? annotation.title :
-                          searchLocation ?? annotation.title :
-                          hereLocation ?? annotation.title :
-                          "Enter location name", text: $locationName)
+                TextField("Enter location name", text: $locationName)
+                    .onAppear {
+                        locationName = annotationTitle ?? ""
+                    }
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                     .submitLabel(.done) // キーボードのリターンキーを「Done」に変更
                     .onSubmit {
-                        onConfirm() // キーボードのリターンキーが押されたときに登録を行う
+                        if !locationName.isEmpty {
+                            onConfirm() // キーボードのリターンキーが押されたときに登録を行う
+                        }
                     }
                 HStack {
                     Button(action: onCancel) {
@@ -38,7 +41,7 @@ struct RegisterLocationView: View {
                     Button(action: {
                         if justRegisteredFirst {
                             showAlreadyRegisteredAlert = true
-                        } else {
+                        } else if !locationName.isEmpty {
                             onConfirm()
                         }
                     }) {
@@ -47,6 +50,7 @@ struct RegisterLocationView: View {
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .padding()
+                    .disabled(locationName.isEmpty) // locationNameが空の場合はボタンを無効化
                 }
             }
             .background(Color.white)

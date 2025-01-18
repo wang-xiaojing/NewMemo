@@ -55,6 +55,7 @@ struct MapViewContainer: View {
     @State private var initialLocation: CLLocationCoordinate2D? // 追加: 初期表示位置を保持するプロパティ
     @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
     @State private var memoLocation: CLLocationCoordinate2D?
+    @State var annotationTitle: String? = nil // 追加
 
     init(showLocation: Binding<Bool>,
          registeredLocationArray: Binding<[RegisteredLocation]>,
@@ -65,8 +66,8 @@ struct MapViewContainer: View {
         self._selectedRegisteredLocation = State(initialValue: selectedRegisteredLocation)
         if let location = selectedRegisteredLocation?.coordinate {
             self._memoLocation = State(initialValue: location)
-            self._justRegisteredFirst = State(initialValue: true)    // 問題箇所
-            self._justRegisteredSecond = State(initialValue: true)   // 問題箇所
+            self._justRegisteredFirst = State(initialValue: true)
+            self._justRegisteredSecond = State(initialValue: true)   
         }
         if let searchLocation = searchLocation {
             print("Debug-200 searchLocation: \(searchLocation)")
@@ -144,6 +145,7 @@ struct MapViewContainer: View {
                 justRegisteredFirst: $justRegisteredFirst,
                 justRegisteredSecond: $justRegisteredSecond,
                 showAlreadyRegisteredAlertForLongTap: $showAlreadyRegisteredAlertForLongTap,
+                annotationTitle: $annotationTitle,
                 onLongTap: {
                     showTelopOfDescriptionOfLongTap = false
                 }
@@ -173,6 +175,8 @@ struct MapViewContainer: View {
                             longTapLocation = nil
                             searchResults = [selectedResult] // 選択された結果のみを保持する
                         }
+                        annotationTitle = selectedResult.name
+                        print("Debug annotationTitle 0 = \(annotationTitle)")
                     } else {
                         selectedSearchResult = nil // 検索結果を無効にする
                     }
@@ -265,11 +269,12 @@ struct MapViewContainer: View {
                             isRegisterViewPresented = false
                         }
                     },
+                    isRegisterViewPresented: $isRegisterViewPresented, // 修正: 引数の順序を変更
+                    justRegisteredFirst: $justRegisteredFirst, // 修正: 引数の順序を変更
                     hereLocation: $hereLocation,
                     searchLocation: $searchLocation,
                     longTapLocation: $longTapLocation,
-                    isRegisterViewPresented: $isRegisterViewPresented, // 追加: isRegisterViewPresentedを渡す
-                    justRegisteredFirst: $justRegisteredFirst // 追加: justRegisteredFirstを渡す
+                    annotationTitle: $annotationTitle
                 )
                 .background(Color.black.opacity(0.5))
                 .edgesIgnoringSafeArea(.all)
@@ -391,6 +396,8 @@ struct MapViewContainer: View {
             }
             searchResults = response.mapItems
             if searchResults.count == 1, let singleResult = searchResults.first {
+                annotationTitle = singleResult.name
+                print("Debug annotationTitle 0 = \(annotationTitle)")
                 if justRegisteredFirst {
                     tempSearchItem = singleResult
                     showAlreadyRegisteredAlertForSearch = true
@@ -405,13 +412,13 @@ struct MapViewContainer: View {
                 isSearchItemSelectorPresented = true // 検索結果が複数ある場合、SearchItemSelectorViewを表示
             }
             completion()
-            for item in searchResults {
-                print("Name: \(item.name ?? "No name")")
-                print("Phone Number: \(item.phoneNumber ?? "No phone number")")
-                print("URL: \(item.url?.absoluteString ?? "No URL")")
-                print("Time Zone: \(item.timeZone?.identifier ?? "No time zone")")
-                print("Placemark: \(item.placemark)")
-            }
+            // for item in searchResults {
+            //     print("Debuge Name: \(item.name ?? "No name")")
+            //     print("Debuge Phone Number: \(item.phoneNumber ?? "No phone number")")
+            //     print("Debuge URL: \(item.url?.absoluteString ?? "No URL")")
+            //     print("Debuge Time Zone: \(item.timeZone?.identifier ?? "No time zone")")
+            //     print("Debuge Placemark: \(item.placemark)")
+            // }
         }
     }
     
@@ -430,7 +437,9 @@ struct MapViewContainer: View {
         longTapLocation = nil
         memoLocation = nil
         searchResults.removeAll()
-    }
+        annotationTitle = ""
+        print("Debug annotationTitle 4 = \(annotationTitle)")
+   }
     
     // ズームインボタンがクリックされたときの処理
     func zoomIn() {
