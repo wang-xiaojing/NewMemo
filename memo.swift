@@ -26,8 +26,10 @@
 //                                        （１）MARK: Pinが設置されたかを判定
 //                                        （２）MARK: Pinが設置されたかを判定
 //                                        （３）func removeAllPins()中にmemoLocation = nil
+// (ここでcommit:f9095756e7751535adcc4d2640c65dda1d7a6e98)
+//                 LongTapでPin設置：NG（現象として、Pinの表示だけできてないようです）
+//                                  -> OK!
 // (ここでcommit)
-//                 LongTapでPin設置：NG
 //
 //
 // MapViewContainerおよび関連の処理 // search, hear,

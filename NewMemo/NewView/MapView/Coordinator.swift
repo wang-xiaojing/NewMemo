@@ -14,15 +14,18 @@ class Coordinator: NSObject, MKMapViewDelegate {
     var parent: MapView
     var onLongTap: () -> Void
     @Binding var justRegisteredFirst: Bool
+    @Binding var justRegisteredSecond: Bool
     @Binding var showAlreadyRegisteredAlertForLongTap: Bool
     
     init(_ parent: MapView,
          onLongTap: @escaping () -> Void,
          justRegisteredFirst: Binding<Bool>,
+         justRegisteredSecond: Binding<Bool>,
          showAlreadyRegisteredAlertForLongTap: Binding<Bool>) {
         self.parent = parent
         self.onLongTap = onLongTap
         self._justRegisteredFirst = justRegisteredFirst
+        self._justRegisteredSecond = justRegisteredSecond
         self._showAlreadyRegisteredAlertForLongTap = showAlreadyRegisteredAlertForLongTap
     }
     
@@ -66,6 +69,7 @@ class Coordinator: NSObject, MKMapViewDelegate {
                 alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
                     self.showAlreadyRegisteredAlertForLongTap = false
                     self.justRegisteredFirst = false
+                    self.justRegisteredSecond = false
                     self.parent.longTapLocation = coordinate
                     self.onLongTap()
                 })

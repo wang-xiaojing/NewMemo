@@ -30,6 +30,7 @@ struct MapView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(self, onLongTap: onLongTap,
                     justRegisteredFirst: $justRegisteredFirst,
+                    justRegisteredSecond: $justRegisteredSecond,
                     showAlreadyRegisteredAlertForLongTap: $showAlreadyRegisteredAlertForLongTap)
     }
     
