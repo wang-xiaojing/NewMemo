@@ -44,6 +44,9 @@
         }
       }
     },
+    "Are you sure you want to delete this recording?" : {
+
+    },
     "AudioRecod" : {
 
     },
@@ -80,6 +83,9 @@
 
     },
     "Contrast" : {
+
+    },
+    "Delete Confirmation" : {
 
     },
     "Enter location name" : {

@@ -27,9 +27,11 @@
                                        （２）MARK: Pinが設置されたかを判定
                                        （３）func removeAllPins()中にmemoLocation = nil
  (ここでcommit:f9095756e7751535adcc4d2640c65dda1d7a6e98)
-                LongTapでPin設置：NG（現象として、Pinの表示だけできてないようです）
+
+ LongTapでPin設置：NG（現象として、Pinの表示だけできてないようです）
                                  -> OK!
  (ここでcommit:f8c0b663d7bbd81048178d33b68790f3768ca43a)
+ 
  （１）検索した結果を.nameが nil ではなければ、RegisterLocationViewのTextFieldの初期値として設定しています。
  onAppear修飾子を使用して、ビューが表示されるときに.nameを取得する。
  これにより、ユーザーが入力を開始する前に.nameがテキストフィールドに表示されます。
@@ -39,11 +41,23 @@
  2024.01.19 -----------------------------------
  コメント整理
  (ここでcommit:8501dfdeec52eba0d107be4e2e5c8a3effdfa16e)
+
  AttributedTextEditorの最大表示行数を20+1行に変更
- (ここでcommit:)
+ (ここでcommit:5c22ab6c45a1d2c640c86ba88bcbe8da37ae998e)
+
+ AttributedTextEditorの最大表示行数を10+1行に変更
+ AttributedTextEditorをScrollViewに変更
+ NewViewをScrollViewに変更
+ (ここでcommit:7e12c44d39ed60c9f52bb4a1bb9562c12f63909a)
  
- 
- 
+ AudioViewのtrash(削除) buttonが押しられて、
+ recording.isPlayingではない状態時の仕様を変更します。
+ 今まではaudioRecorder.deleteRecording(fileName: recording.fileName) を実行するとなってますが、
+ 変更後は、
+ audioRecorder.deleteRecording(fileName: recording.fileName) を実行する前、「Delete Confirmation」の確認Alert画面を表示させ
+ 確認Alert画面に CancelとOK buttonsがあります。
+ Cancelなら中止、OKならaudioRecorder.deleteRecording(fileName: recording.fileName) を実行する
+
  
  TODO: 解析必要： func search(completion: @escaping () -> Void) {
  TODO: 調査 - LongTapまたはHereの時、近く(?)のname情報取得可能か?

@@ -21,6 +21,9 @@ struct AudioView: View {
     @Binding var audioWaveSamples: [CGFloat]
     @Binding var audioWaveTimer: Timer?
     
+    @State private var showDeleteConfirmation = false
+    @State private var fileNameToDelete: String?
+
     var body: some View {
         NavigationView {
             VStack {
@@ -72,7 +75,8 @@ struct AudioView: View {
                                     if recording.isPlaying {
                                         showAlert(title: "削除不可", message: "再生中のため削除できません。")
                                     } else {
-                                        audioRecorder.deleteRecording(fileName: recording.fileName)
+                                        showDeleteConfirmation = true
+                                        fileNameToDelete = recording.fileName
                                     }
                                 }) {
                                     Image(systemName: "trash")
@@ -100,6 +104,18 @@ struct AudioView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(audioAlertMessage)
+            }
+            .alert(isPresented: $showDeleteConfirmation) {
+                Alert(
+                    title: Text("Delete Confirmation"),
+                    message: Text("Are you sure you want to delete this recording?"),
+                    primaryButton: .destructive(Text("OK")) {
+                        if let fileName = fileNameToDelete {
+                            audioRecorder.deleteRecording(fileName: fileName)
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
             }
         }
     }
