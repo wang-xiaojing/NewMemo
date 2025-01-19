@@ -117,8 +117,9 @@ struct NewView: View {
                                     textEditorHeight = geometry.size.height  // MARK: 高さを更新
                                 }
                             })
+                            // MARK: - テキストの高さを調整
                             .onChange(of: text) {
-                                adjustTextEditorHeight()  // MARK: テキストの高さを調整
+                                adjustTextEditorHeight()
                             }
                             .onTapGesture {
                                 showFontSettings = false  // MARK: フォント設定画面を非表示に
@@ -335,6 +336,7 @@ struct NewView: View {
                 }
             }
             .padding()  // MARK: 全体にパディングを適用
+            // MARK: - テキストの高さを調整
             .onAppear {
                 adjustTextEditorHeight()  // MARK: テキストエディタの高さを調整
                 setupKeyboardObservers()  // MARK: キーボード表示のオブザーバを設定
@@ -409,7 +411,7 @@ struct NewView: View {
 
     private func adjustTextEditorHeight() {
         let lineHeight = calculateLineHeight()  // MARK: 行の高さを計算
-        let maxLines: CGFloat = 10 + 1  // MARK: 最大行数を設定
+        let maxLines: CGFloat = 20 + 1  // MARK: 最大行数を設定
         let minLines: CGFloat = 3 + 1  // MARK: 最小行数を設定
         let minHeight: CGFloat = lineHeight * minLines  // MARK: 最小高さを計算
         let maxHeight: CGFloat = lineHeight * maxLines  // MARK: 最大高さを計算

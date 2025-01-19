@@ -38,8 +38,12 @@
 
  2024.01.19 -----------------------------------
  コメント整理
+ (ここでcommit:8501dfdeec52eba0d107be4e2e5c8a3effdfa16e)
+ AttributedTextEditorの最大表示行数を20+1行に変更
  (ここでcommit:)
-
+ 
+ 
+ 
  
  TODO: 解析必要： func search(completion: @escaping () -> Void) {
  TODO: 調査 - LongTapまたはHereの時、近く(?)のname情報取得可能か?
