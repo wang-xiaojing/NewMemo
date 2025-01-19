@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-// 検索バーを表示するビュー
+// MARK: - 検索バーを表示するビュー
 struct SearchBar: View {
     @Binding var searchText: String
     var onSearchBarSearchButtonClicked: () -> Void

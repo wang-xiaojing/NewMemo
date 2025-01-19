@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-// 新しい AudioView
+// MARK: - 新しい AudioView
 struct AudioView: View {
     @EnvironmentObject var audioRecorder: AudioRecorder
     
@@ -24,17 +24,16 @@ struct AudioView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // 録音一覧
+                // MARK: - 録音一覧
                 List {
                     ForEach(audioRecorder.audioRecordings) { recording in
                         VStack {
                             HStack(spacing: 5) {
                                 Text(recording.fileName)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                // 停止ボタン
+                                // MARK: - 停止ボタン
                                 if recording.isPlaying {
                                     Button(action: {
-                                        print("[Button 6]stopRecording FileName: \(recording.fileName)")
                                         audioRecorder.stopPlay(fileName: recording.fileName)
                                     }) {
                                         Image(systemName: "stop.fill")
@@ -43,22 +42,17 @@ struct AudioView: View {
                                             .foregroundColor(.black)
                                     }
                                     .buttonStyle(BorderlessButtonStyle())
-                                    
                                     Spacer()
-                                    
                                 }
-                                // 再生ボタン
+                                // MARK: - 再生ボタン
                                 Button(action: {
                                     if recording.isPlaying {
                                         if recording.isPaused {
-                                            print("[Button 4]resumeRecording FileName: \(recording.fileName)")
                                             audioRecorder.resumeRecording(fileName: recording.fileName)
                                         } else {
-                                            print("[Button 5]pauseRecording  FileName: \(recording.fileName)")
                                             audioRecorder.pauseRecording(fileName: recording.fileName)
                                         }
                                     } else {
-                                        print("[Button 3]playRecording FileName: \(recording.fileName)")
                                         audioRecorder.playRecording(fileName: recording.fileName)
                                     }
                                 }) {
@@ -72,10 +66,8 @@ struct AudioView: View {
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
                                 .disabled(audioRecorder.audioRecordings.contains { $0.isPlaying && $0.fileName != recording.fileName })
-                                
                                 Spacer()
-                                
-                                // 削除
+                                // MARK: - 削除
                                 Button(action: {
                                     if recording.isPlaying {
                                         showAlert(title: "削除不可", message: "再生中のため削除できません。")
@@ -92,7 +84,7 @@ struct AudioView: View {
                                 .buttonStyle(BorderlessButtonStyle())
                                 .disabled(audioRecorder.audioRecordings.contains { $0.isPlaying && $0.fileName != recording.fileName })
                             }
-                            // 再生の進捗バー
+                            // MARK: - 再生の進捗バー
                             ProgressView(value: recording.progress)
                                 .progressViewStyle(LinearProgressViewStyle())
                         }

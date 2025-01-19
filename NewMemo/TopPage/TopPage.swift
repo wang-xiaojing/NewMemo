@@ -17,7 +17,7 @@ struct TopPage: View {
     @State private var dragOffset: CGSize = .zero
     @State private var selectedRow: Int = 0
 
-    @State private var showAudioOverlayWindow: Bool = false  // マイク入力画面の表示フラグ
+    @State private var showAudioOverlayWindow: Bool = false  // MARK: マイク入力画面の表示フラグ
 
     var body: some View {
         NavigationSplitView {
@@ -36,87 +36,84 @@ struct TopPage: View {
             .navigationTitle("\(selection)\((selection != "Home" && selection != "Settings") ? "\(AppSetting.menuSheetItems[selectedRow][2])" : "")")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // if !showAudioOverlayWindow {    // AudioOverlayWindowが表示された時、tool barの操作は禁止です
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            withAnimation {
-                                menuPushed.toggle()
-                            }
-                        }) {
-                            Label("Menu", systemImage: "line.horizontal.3")
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        withAnimation {
+                            menuPushed.toggle()
                         }
-                        .disabled(showAudioOverlayWindow)
+                    }) {
+                        Label("Menu", systemImage: "line.horizontal.3")
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            isSearchActive.toggle()
-                        }) {
-                            Label("Search", systemImage: "magnifyingglass")
+                    .disabled(showAudioOverlayWindow)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isSearchActive.toggle()
+                    }) {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                    .padding()
+                    .disabled(showAudioOverlayWindow)
+                }
+                // MARK:  -画面下部
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Group {
+                        HStack {
+                            Button(action: {
+                                selection = "Home"
+                                menuPushed = false
+                            }) {
+                                VStack {
+                                    Image(systemName: "house")
+                                    Text("Home").font(.caption)
+                                }
+                            }
+                            Spacer()
+                            Button(action: {
+                                selection = "New"
+                            }) {
+                                VStack {
+                                    Image(systemName: "text.badge.plus")
+                                    Text("New").font(.caption)
+                                }
+                            }
+                            Spacer()
+                            Button(action: {
+                                selection = "List"
+                            }) {
+                                VStack {
+                                    Image(systemName: "list.bullet")
+                                    Text("List").font(.caption)
+                                }
+                            }
+                            Spacer()
+                            Button(action: {
+                                selection = "Calendar"
+                            }) {
+                                VStack {
+                                    Image(systemName: "calendar")
+                                    Text("Calendar").font(.caption)
+                                }
+                            }
+                            Spacer()
+                            Button(action: {
+                                selection = "Settings"
+                                menuPushed = false
+                            }) {
+                                VStack {
+                                    Image(systemName: "gearshape")
+                                    Text("Settings").font(.caption)
+                                }
+                            }
                         }
                         .padding()
-                        .disabled(showAudioOverlayWindow)
                     }
-                    // 画面下部
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        Group {
-                            HStack {
-                                Button(action: {
-                                    selection = "Home"
-                                    menuPushed = false
-                                }) {
-                                    VStack {
-                                        Image(systemName: "house")
-                                        Text("Home").font(.caption)
-                                    }
-                                }
-                                Spacer()
-                                Button(action: {
-                                    selection = "New"
-                                }) {
-                                    VStack {
-                                        Image(systemName: "text.badge.plus")
-                                        Text("New").font(.caption)
-                                    }
-                                }
-                                Spacer()
-                                Button(action: {
-                                    selection = "List"
-                                }) {
-                                    VStack {
-                                        Image(systemName: "list.bullet")
-                                        Text("List").font(.caption)
-                                    }
-                                }
-                                Spacer()
-                                Button(action: {
-                                    selection = "Calendar"
-                                }) {
-                                    VStack {
-                                        Image(systemName: "calendar")
-                                        Text("Calendar").font(.caption)
-                                    }
-                                }
-                                Spacer()
-                                Button(action: {
-                                    selection = "Settings"
-                                    menuPushed = false
-                                }) {
-                                    VStack {
-                                        Image(systemName: "gearshape")
-                                        Text("Settings").font(.caption)
-                                    }
-                                }
-                            }
-                            .padding()
-                        }
-                        .disabled(showAudioOverlayWindow)
-                    }
-                // }
+                    .disabled(showAudioOverlayWindow)
+                }
             }
-            // .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search items")
             .onChange(of: searchText) {
-                // サーチテキストが変更されたときの処理
-                // 例えば、itemsをフィルタリングするなど
+                // MARK: - サーチテキストが変更されたときの処理
+                //         例えば、itemsをフィルタリングするなど
             }
             .overlay(
                 ZStack {
@@ -142,9 +139,9 @@ struct TopPage: View {
                         }
                     }
                 }
-                , alignment: .leading     // 重なるレビューの位置を指定する（左）
+                , alignment: .leading     // MARK: 重なるレビューの位置を指定する（左）
             )
-            .gesture(   // スワイプ機能
+            .gesture(   // MARK: スワイプ機能
                 DragGesture()
                     .onChanged { value in
                         if value.translation.width > 0 {
@@ -152,13 +149,13 @@ struct TopPage: View {
                         }
                     }
                     .onEnded { value in
-                        if value.translation.width > 100 {  // 右スワイプ
+                        if value.translation.width > 100 {  // MARK: 右スワイプ
                             withAnimation {
-                                menuPushed = true   // MenuSheetを表示する
+                                menuPushed = true   // MARK: MenuSheetを表示する
                             }
-                        } else if value.translation.width < -100 {  // 左スワイプ
+                        } else if value.translation.width < -100 {  // MARK: 左スワイプ
                              withAnimation {
-                                 menuPushed = false // MenuSheetを閉じる
+                                 menuPushed = false // MARK: MenuSheetを閉じる
                              }
                         }
                         dragOffset = .zero

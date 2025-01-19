@@ -7,7 +7,7 @@
 import SwiftUI
 import MapKit
 
-// 地図を表示するビュー
+// MARK: - 地図を表示するビュー
 struct MapView: UIViewRepresentable {
     @ObservedObject var locationManager: LocationManager
     @Binding var selectedSearchResult: MKMapItem?
@@ -18,13 +18,13 @@ struct MapView: UIViewRepresentable {
     @Binding var longTapLocation: CLLocationCoordinate2D?
     @Binding var memoLocation: CLLocationCoordinate2D?
     @Binding var shouldShowUserLocationPin: Bool
-    @Binding var shouldShowSearchLocationPin: Bool // 検索結果座標にピンを表示するかどうかを保持するプロパティ
-    @Binding var shouldShowLongTapLocationPin: Bool // ロングタップ座標にピンを表示するかどうかを保持するプロパティ
-    @Binding var isZooming: Bool // ズームインまたはズームアウトの状態を管理するプロパティ
-    @Binding var justRegisteredFirst: Bool // 追加
-    @Binding var justRegisteredSecond: Bool // 追加
-    @Binding var showAlreadyRegisteredAlertForLongTap: Bool // 追加
-    @Binding var annotationTitle: String? // 追加
+    @Binding var shouldShowSearchLocationPin: Bool // MARK: 検索結果座標にピンを表示するかどうかを保持するプロパティ
+    @Binding var shouldShowLongTapLocationPin: Bool // MARK: ロングタップ座標にピンを表示するかどうかを保持するプロパティ
+    @Binding var isZooming: Bool // MARK: ズームインまたはズームアウトの状態を管理するプロパティ
+    @Binding var justRegisteredFirst: Bool
+    @Binding var justRegisteredSecond: Bool
+    @Binding var showAlreadyRegisteredAlertForLongTap: Bool
+    @Binding var annotationTitle: String?
 
     var onLongTap: () -> Void
     
@@ -48,13 +48,12 @@ struct MapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: MKMapView, context: Context) {
        
-        // ズームインとズームアウトの通知を受け取る
+        // MARK: - ズームインとズームアウトの通知を受け取る
         NotificationCenter.default.addObserver(forName: .zoomIn, object: nil, queue: .main) { _ in
             let region = uiView.region
             let span = MKCoordinateSpan(latitudeDelta: region.span.latitudeDelta / 2, longitudeDelta: region.span.longitudeDelta / 2)
             let newRegion = MKCoordinateRegion(center: region.center, span: span)
             uiView.setRegion(newRegion, animated: true)
-            // context.coordinator.parent.isZooming = false // 修正: isZoomingを設定
         }
         
         NotificationCenter.default.addObserver(forName: .zoomOut, object: nil, queue: .main) { _ in
@@ -65,7 +64,6 @@ struct MapView: UIViewRepresentable {
             )
             let newRegion = MKCoordinateRegion(center: region.center, span: span)
             uiView.setRegion(newRegion, animated: true)
-            // context.coordinator.parent.isZooming = false // 修正: isZoomingを設定
         }
 
         NotificationCenter.default.addObserver(forName: .moveToPin, object: nil, queue: .main) { notification in
@@ -80,11 +78,11 @@ struct MapView: UIViewRepresentable {
             }
         }
         
-        // ロングタップの位置情報が取得できた場合
-        if let coordinate = longTapLocation, !justRegisteredSecond {   // ロングタップの座標が設定されている場合
-            // 既存のアノテーションを削除
+        // MARK: - ロングタップの位置情報が取得できた場合
+        if let coordinate = longTapLocation, !justRegisteredSecond {   // MARK: ロングタップの座標が設定されている場合
+            // MARK: - 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
-            // ロングタップの位置にピンを追加
+            // MARK: - ロングタップの位置にピンを追加
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
                 if let selectedResult = longTapResult {
@@ -96,7 +94,6 @@ struct MapView: UIViewRepresentable {
                     }
                 } else {
                     if justRegisteredFirst {    // MARK: 登録済みかを判定
-                        // annotation.title = ""
                         annotation.subtitle = "登録済み"
                     } else {
                         annotation.title = ""
@@ -106,18 +103,18 @@ struct MapView: UIViewRepresentable {
             uiView.addAnnotation(annotation)
             annotationTitle = annotation.title
             print("Debug annotationTitle 1 = \(annotationTitle)")
-        } else if let coordinate = searchLocation, !justRegisteredSecond {     // 検索結果の座標が設定されている場合
-            // 既存のアノテーションを削除
+        } else if let coordinate = searchLocation, !justRegisteredSecond {     // MARK: 検索結果の座標が設定されている場合
+            // MARK: - 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
-            // 検索結果の位置情報が取得できた場合
+            // MARK: - 検索結果の位置情報が取得できた場合
             if !isZooming {
-                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
-                let region = MKCoordinateRegion(center: coordinate, span: span) // 表示領域を設定
-                uiView.setRegion(region, animated: true) // 地図の表示領域を更新
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // MARK: 表示範囲を設定
+                let region = MKCoordinateRegion(center: coordinate, span: span) // MARK: 表示領域を設定
+                uiView.setRegion(region, animated: true) // MARK: 地図の表示領域を更新
             }
-            // 検索結果座標にピンを追加
-            let annotation = MKPointAnnotation() // アノテーションを作成
-            annotation.coordinate = coordinate // アノテーションの座標を設定
+            // MARK: - 検索結果座標にピンを追加
+            let annotation = MKPointAnnotation() // MARK: アノテーションを作成
+            annotation.coordinate = coordinate // MARK: アノテーションの座標を設定
             if let selectedResult = selectedSearchResult {
                 annotation.title = selectedResult.name // アノテーションのタイトルを設定
                 if justRegisteredFirst {    // MARK: 登録済みかを判定
@@ -127,24 +124,23 @@ struct MapView: UIViewRepresentable {
                 }
             } else {
                 if justRegisteredFirst {    // MARK: 登録済みかを判定
-                    // annotation.title = ""
                     annotation.subtitle = "登録済み"
                 } else {
                     annotation.title = ""
                     annotation.subtitle = "未登録"
                 }
             }
-            uiView.addAnnotation(annotation) // アノテーションをマップに追加
-        } else if let coordinate = hereLocation, !justRegisteredSecond {       // 現在地の座標が設定されている場合
-            // 既存のアノテーションを削除
+            uiView.addAnnotation(annotation) // MARK: アノテーションをマップに追加
+        } else if let coordinate = hereLocation, !justRegisteredSecond {       // MARK: 現在地の座標が設定されている場合
+            // MARK: - 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
-            // 現在地の位置情報が取得できた場合
+            // MARK: - 現在地の位置情報が取得できた場合
             if !isZooming {
-                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
-                let region = MKCoordinateRegion(center: coordinate, span: span) // 表示領域を設定
-                uiView.setRegion(region, animated: true) // 地図の表示領域を更新
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // MARK: 表示範囲を設定
+                let region = MKCoordinateRegion(center: coordinate, span: span) // MARK: 表示領域を設定
+                uiView.setRegion(region, animated: true) // MARK: 地図の表示領域を更新
             }
-            // 現在地にピンを追加
+            // MARK: - 現在地にピンを追加
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             if justRegisteredFirst {    // MARK: 登録済みかを判定
@@ -181,14 +177,14 @@ struct MapView: UIViewRepresentable {
             uiView.addAnnotation(annotation)
             annotationTitle = annotation.title
             print("Debug annotationTitle 3 = \(annotationTitle)")
-        } else if let coordinate = locationManager.location?.coordinate, !justRegisteredSecond {       // 画面にピンが置かれていない状態）
-            // 既存のアノテーションを削除
+        } else if let coordinate = locationManager.location?.coordinate, !justRegisteredSecond {       // MARK: 画面にピンが置かれていない状態）
+            // MARK: - 既存のアノテーションを削除
             uiView.removeAnnotations(uiView.annotations)
-            // 初期表示範囲を設定
+            // MARK: - 初期表示範囲を設定
             if !isZooming {
-                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
-                let region = MKCoordinateRegion(center: coordinate, span: span) // 表示領域を設定
-                uiView.setRegion(region, animated: true) // 地図の表示領域を更新
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // MARK: 表示範囲を設定
+                let region = MKCoordinateRegion(center: coordinate, span: span) // MARK: 表示領域を設定
+                uiView.setRegion(region, animated: true) //  MARK: 地図の表示領域を更新
             }
         }
             }

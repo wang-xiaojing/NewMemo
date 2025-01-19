@@ -6,12 +6,12 @@
 //
 import SwiftUI
 
-// 波形用のView
+// MARK: - 波形用のView
 struct AudioWaveView: View {
     let samples: [CGFloat]
     let size: CGSize
 
-    // 最小値と最大値を保持するための変数
+    // MARK: - 最小値と最大値を保持するための変数
     @State private var overallMinValue: CGFloat = .greatestFiniteMagnitude
     @State private var overallMaxValue: CGFloat = 0
 
@@ -19,34 +19,34 @@ struct AudioWaveView: View {
         ZStack {
             Color.blue.opacity(0.05)
             Path { path in
-                // samples配列が空でないことを確認する。空の場合は処理を中断して戻る。
+                // MARK: - samples配列が空でないことを確認する。空の場合は処理を中断して戻る。
                 guard !samples.isEmpty else { return }
-                // AppSetting.voiceRecodeSamplePointsから最大カウント数を取得する。
+                // MARK: - AppSetting.voiceRecodeSamplePointsから最大カウント数を取得する。
                 let maxCount = AppSetting.voiceRecodeSamplePoints
-                // 波形を描画するためのステップ幅を計算する。
+                // MARK: - 波形を描画するためのステップ幅を計算する。
                 let step = size.width / CGFloat(maxCount - 1)
 
-                // 現在のsamplesの最小値と最大値を取得する
+                // MARK: - 現在のsamplesの最小値と最大値を取得する
                 let currentMinValue = samples.min() ?? .greatestFiniteMagnitude
                 let currentMaxValue = samples.max() ?? 0
 
-                // 全体の最小値と最大値を更新する
+                // MARK: - 全体の最小値と最大値を更新する
                 DispatchQueue.main.async {
                     overallMinValue = min(overallMinValue, currentMinValue)
                     overallMaxValue = max(overallMaxValue, currentMaxValue)
                 }
 
-                // samples配列の各要素から全体の最小値を引いた新しい配列を作成し、負の値は0にする。
+                // MARK: - samples配列の各要素から全体の最小値を引いた新しい配列を作成し、負の値は0にする。
                 let adjustedSamples = samples.map { max($0 - overallMinValue, 0) }
                 
-                // adjustedSamples配列の各要素を全体の最大値で割り、0から1の範囲に正規化した新しい配列を作成する。
+                // MARK: - adjustedSamples配列の各要素を全体の最大値で割り、0から1の範囲に正規化した新しい配列を作成する。
                 let normalizedSamples = adjustedSamples.map { $0 / overallMaxValue }
 
                 for (index, sample) in normalizedSamples.enumerated() {
-                    // xPosを計算して描画する
+                    // MARK: - xPosを計算して描画する
                     let xPos = size.width - step * CGFloat(normalizedSamples.count - 1 - index)
                     let yPos = sample * size.height
-                    // 点線を描画するために指定の間隔で点を描く
+                    // MARK: - 点線を描画するために指定の間隔で点を描く
                     let pointInterval: CGFloat = 2.0 // 点の間隔を調整
                     var currentYPos = (size.height / 2) - yPos
                     while currentYPos < (size.height / 2) + yPos {

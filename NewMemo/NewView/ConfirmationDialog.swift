@@ -6,9 +6,9 @@
 //
 import SwiftUI
 
-// ConfirmationDialogビューを作成
+// MARK: - ConfirmationDialogビューを作成
 struct ConfirmationDialog: View {
-    @Environment(\.presentationMode) var presentationMode  // シートの表示状態を管理
+    @Environment(\.presentationMode) var presentationMode  // MARK: シートの表示状態を管理
 
     let title: String
     let message: String
@@ -23,12 +23,12 @@ struct ConfirmationDialog: View {
             Text(message)
             HStack {
                 Button("キャンセル") {
-                    presentationMode.wrappedValue.dismiss()  // シートを閉じる
+                    presentationMode.wrappedValue.dismiss()  // MARK: シートを閉じる
                 }
                 Spacer()
                 Button(confirmTitle) {
                     confirmAction()
-                    presentationMode.wrappedValue.dismiss()  // アクション後にシートを閉じる
+                    presentationMode.wrappedValue.dismiss()  // MARK: アクション後にシートを閉じる
                 }
                 .foregroundColor(isDestructive ? .red : .blue)
             }

@@ -32,7 +32,7 @@ struct SearchItemSelectorView: View {
                 
                 Button(action: {
                     if selectedSearchResult == nil {
-                        onCancelOfSearchItemSelectorView() // 選択されていない場合はキャンセルと同じ動作
+                        onCancelOfSearchItemSelectorView() // MARK: 選択されていない場合はキャンセルと同じ動作
                     } else {
                         onConfirmOfSearchItemSelectorView()
                     }

@@ -186,7 +186,7 @@ struct ImageCropView: View {
         let xOffset = (geometry.size.width - displaySize.width) / 2
         let yOffset = (geometry.size.height - displaySize.height) / 2
 
-        // FIXME: トリミング枠が画像表示範囲内に収まるように調整、未完成
+        // TODO: トリミング枠が画像表示範囲内に収まるように調整、未完成
         // let newX = max(0, min(geometry.size.width, value.location.x))
         // let newY = max(0, min(geometry.size.height, value.location.y))
         let newX = max(xOffset, min(xOffset + displaySize.width, value.location.x))
@@ -211,24 +211,20 @@ struct ImageCropView: View {
             newRect.size.height = newY - cropRect.minY
         }
 
-        // トリミング枠が画像表示範囲内に収まるように調整
-
+        // MARK: - トリミング枠が画像表示範囲内に収まるように調整
         // newRect.origin.x = max(xOffset, min(newRect.origin.x, xOffset + displaySize.width - newRect.width))
         // newRect.origin.y = max(yOffset, min(newRect.origin.y, yOffset + displaySize.height - newRect.height))
         // newRect.size.width = min(newRect.width, xOffset + displaySize.width - newRect.origin.x)
         // newRect.size.height = min(newRect.height, yOffset + displaySize.height - newRect.origin.y)
-
         return newRect
     }
 
     private func cropImage(image: UIImage, toRect cropRect: CGRect, viewSize: CGSize) -> UIImage {
         let scale = min(image.size.width / viewSize.width, image.size.height / viewSize.height)
         let scaledCropRect = CGRect(x: cropRect.origin.x * scale, y: cropRect.origin.y * scale, width: cropRect.width * scale, height: cropRect.height * scale)
-        
         if let cgImage = image.cgImage?.cropping(to: scaledCropRect) {
             return UIImage(cgImage: cgImage)
         }
-        
         return image
     }
 }

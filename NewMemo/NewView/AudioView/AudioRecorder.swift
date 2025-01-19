@@ -28,7 +28,7 @@ class AudioRecorder: NSObject, ObservableObject {
     @Published var audioPlayer: AVAudioPlayer?
     var progressTimer: Timer?
 
-    // 録音メータリング関連
+    // MARK: - 録音メータリング関連
     func enableMetering() {
         internalRecorder?.isMeteringEnabled = true
     }
@@ -72,7 +72,7 @@ class AudioRecorder: NSObject, ObservableObject {
 
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .default)     // 録音音量の試しコード
+            try session.setCategory(.playAndRecord, mode: .default)     // MARK: 録音音量の試しコード
             try session.setActive(true)
             internalRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             internalRecorder?.isMeteringEnabled = true
@@ -106,7 +106,7 @@ class AudioRecorder: NSObject, ObservableObject {
         var existingFileNames = Set(audioRecordings.map { $0.fileName })
         let currentFileNames = Set(files.map { $0.lastPathComponent })
 
-        // 新しいファイルを追加
+        // MARK: - 新しいファイルを追加
         for url in files {
             let fileName = url.lastPathComponent
             if !existingFileNames.contains(fileName) {
@@ -119,41 +119,32 @@ class AudioRecorder: NSObject, ObservableObject {
             }
         }
     
-        // 存在しないファイルを除外
+        // MARK: - 存在しないファイルを除外
         audioRecordings.removeAll { !currentFileNames.contains($0.fileName) }
-        // let currentFiles = Set(recordings.map { $0.fileName })
-        // playingStates.keys
-        //     .filter { !currentFiles.contains($0) }
-        //     .forEach { playingStates.removeValue(forKey: $0) }
-        // recordingsの中身をデバッグのために出力
-        print("[fetchRecordings]Current recordings:")
-        for recording in audioRecordings {
-            print("FileName: \(recording.fileName), CreatedAt: \(recording.createdAt), IsPlaying: \(recording.isPlaying), IsPaused: \(recording.isPaused), Progress: \(recording.progress)")
-        }
     }
     
     func playRecording(fileName: String) {
         let audioFilename = getDocumentsDirectory().appendingPathComponent(fileName)
         do {
-            // ファイルが存在するか確認
+            // MARK: - ファイルが存在するか確認
             guard FileManager.default.fileExists(atPath: audioFilename.path) else {
                 print("ファイルが存在しません: \(audioFilename.path)")
                 return
             }
             
-            // オーディオセッションの設定
+            // MARK: - オーディオセッションの設定
             let session = AVAudioSession.sharedInstance()
             try session.setCategory(.playback, mode: .default)
             try session.setActive(true)
             
-            // AVAudioPlayerのインスタンスを作成
+            // MARK: - AVAudioPlayerのインスタンスを作成
             audioPlayer = try AVAudioPlayer(contentsOf: audioFilename)
             audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
-            audioPlayer?.volume = 1.0 // ここで音量を調整（0.0 から 1.0 の範囲）
+            audioPlayer?.volume = 1.0 // MARK: ここで音量を調整（0.0 から 1.0 の範囲）
             audioPlayer?.play()
             
-            // 再生状態を更新
+            // MARK: - 再生状態を更新
             DispatchQueue.main.async {
                 withAnimation {
                     for key in self.playingStates.keys {
@@ -170,11 +161,11 @@ class AudioRecorder: NSObject, ObservableObject {
             print("再生中にエラーが発生しました: \(error.localizedDescription)")
         }
     }
+
     func deleteRecording(fileName: String) {
         let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
         do {
             try FileManager.default.removeItem(at: fileURL)
-            print("削除しました: \(fileURL.path)")
         } catch {
             print("削除に失敗しました: \(error.localizedDescription)")
         }

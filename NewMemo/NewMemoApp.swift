@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct NewMemoApp: App {
-    // AudioRecorderのインスタンスを作成
+    // MARK: - AudioRecorderのインスタンスを作成
     @StateObject private var audioRecorder = AudioRecorder()
 
     var sharedModelContainer: ModelContainer = {

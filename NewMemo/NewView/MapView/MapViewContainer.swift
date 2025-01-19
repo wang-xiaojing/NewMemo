@@ -8,54 +8,51 @@ import SwiftUI
 import UIKit
 import MapKit
 
-// MapViewをラップするビュー
+// MARK: - MapViewをラップするビュー
 struct MapViewContainer: View {
-    @State private var searchResults = [MKMapItem]() // 検索結果を保持するプロパティ
-    @State private var searchText = "" // 検索テキスト
-    
-    @State private var hereLocation: CLLocationCoordinate2D? // 現在地の座標を保持するプロパティ
-    @State private var searchLocation: CLLocationCoordinate2D? // 検索結果の座標を保持するプロパティ
-    @State private var longTapLocation: CLLocationCoordinate2D? // ロングタップの座標を保持するプロパティ
-    
-    @State private var shouldShowUserLocationPin = false // 現在地のピンを表示するかどうかを保持するプロパティ
-    @State private var shouldShowSearchLocationPin = false // 検索結果座標にピンを表示するかどうかを保持するプロパティ
-    @State private var shouldShowLongTapLocationPin = false // ロングタップ座標にピンを表示するかどうかを保持するプロパティ
-    
-    @State private var isSearchBarPresented = false // 検索バーの表示状態を管理するプロパティ
+    @State private var searchResults = [MKMapItem]() // MARK: 検索結果を保持するプロパティ
+    @State private var searchText = "" // MARK: 検索テキスト
+    @State private var hereLocation: CLLocationCoordinate2D? // MARK: 現在地の座標を保持するプロパティ
+    @State private var searchLocation: CLLocationCoordinate2D? // MARK: 検索結果の座標を保持するプロパティ
+    @State private var longTapLocation: CLLocationCoordinate2D? // MARK: ロングタップの座標を保持するプロパティ
+    @State private var shouldShowUserLocationPin = false // MARK: 現在地のピンを表示するかどうかを保持するプロパティ
+    @State private var shouldShowSearchLocationPin = false // MARK: 検索結果座標にピンを表示するかどうかを保持するプロパティ
+    @State private var shouldShowLongTapLocationPin = false // MARK: ロングタップ座標にピンを表示するかどうかを保持するプロパティ
+    @State private var isSearchBarPresented = false // MARK: 検索バーの表示状態を管理するプロパティ
     @State private var searchBarHeight: CGFloat = 0
-    @State private var showTelopOfDescriptionOfLongTap = true // テロップの表示状態を管理するプロパティ
-    @State private var tooltipOffset: CGFloat = UIScreen.main.bounds.width // テロップの初期位置を画面の右端に設定
-    @ObservedObject private var locationManager = LocationManager() // LocationManagerのインスタンス
-    @State private var isSearchItemSelectorPresented = false // SearchItemSelectorViewの表示状態を管理するプロパティ
-    @State private var selectedSearchResult: MKMapItem? // 選択されたSearch結果を保持するプロパティ
-    @State private var hereResult: MKMapItem? // Here結果を保持するプロパティ
-    @State private var longTapResult: MKMapItem? // LongTap結果を保持するプロパティ
-    @State private var searchButtonClickCount = 0 // 検索ボタンがクリックされた回数を保持するプロパティ
-    @State private var hereButtonClickCount = 0 // 現在地ボタンがクリックされた回数を保持するプロパティ
-    @State private var removePinButtonClickCount = 0 // ピン削除ボタンがクリックされた回数を保持するプロパティ
-    @State private var zoomInButtonClickCount = 0 // ズームインボタンがクリックされた回数を保持するプロパティ
-    @State private var zoomOutButtonClickCount = 0 // ズームアウトボタンがクリックされた回数を保持するプロパティ
-    @State private var registerButtonClickCount = 0 // レジスタボタンがクリックされた回数を保持するプロパティ
-    @State private var isZooming = false // ズームインまたはズームアウトの状態を管理するプロパティ
-    @State private var moveToPinButtonClickCount = 0 // ピン移動ボタンがクリックされた回数を保持するプロパティ
-    @State private var registeredLocations = [MKMapItem]() // 登録された位置情報を保持するプロパティ
-    @State private var isRegisterViewPresented = false // 追加: 位置登録画面の表示状態を管理するプロパティ
-    @State private var registerLocationName = "" // 追加: 登録する位置の名称を保持するプロパティ
-    @State private var justRegisteredFirst = false    // 追加: 登録フラグ
-    @State private var justRegisteredSecond = false // 追加: 登録フラグ
+    @State private var showTelopOfDescriptionOfLongTap = true // MARK: テロップの表示状態を管理するプロパティ
+    @State private var tooltipOffset: CGFloat = UIScreen.main.bounds.width // MARK: テロップの初期位置を画面の右端に設定
+    @ObservedObject private var locationManager = LocationManager() // MARK: LocationManagerのインスタンス
+    @State private var isSearchItemSelectorPresented = false // MARK: SearchItemSelectorViewの表示状態を管理するプロパティ
+    @State private var selectedSearchResult: MKMapItem? // MARK: 選択されたSearch結果を保持するプロパティ
+    @State private var hereResult: MKMapItem? // MARK: Here結果を保持するプロパティ
+    @State private var longTapResult: MKMapItem? // MARK: LongTap結果を保持するプロパティ
+    @State private var searchButtonClickCount = 0 // MARK: 検索ボタンがクリックされた回数を保持するプロパティ
+    @State private var hereButtonClickCount = 0 // MARK: 現在地ボタンがクリックされた回数を保持するプロパティ
+    @State private var removePinButtonClickCount = 0 // MARK: ピン削除ボタンがクリックされた回数を保持するプロパティ
+    @State private var zoomInButtonClickCount = 0 // MARK: ズームインボタンがクリックされた回数を保持するプロパティ
+    @State private var zoomOutButtonClickCount = 0 // MARK: ズームアウトボタンがクリックされた回数を保持するプロパティ
+    @State private var registerButtonClickCount = 0 // MARK: レジスタボタンがクリックされた回数を保持するプロパティ
+    @State private var isZooming = false // MARK: ズームインまたはズームアウトの状態を管理するプロパティ
+    @State private var moveToPinButtonClickCount = 0 // MARK: ピン移動ボタンがクリックされた回数を保持するプロパティ
+    @State private var registeredLocations = [MKMapItem]() // MARK: 登録された位置情報を保持するプロパティ
+    @State private var isRegisterViewPresented = false // MARK: 位置登録画面の表示状態を管理するプロパティ
+    @State private var registerLocationName = "" // MARK: 登録する位置の名称を保持するプロパティ
+    @State private var justRegisteredFirst = false    // MARK: 登録フラグ
+    @State private var justRegisteredSecond = false // MARK: 登録フラグ
     @State private var showAlreadyRegisteredAlertForHere = false
-    @State private var showAlreadyRegisteredAlert = false // 追加: アラート表示状態を管理するプロパティ
+    @State private var showAlreadyRegisteredAlert = false // MARK: アラート表示状態を管理するプロパティ
     @State private var showAlreadyRegisteredAlertForLongTap = false
     @State private var showNoPinAlert = false
     @State private var showAlreadyRegisteredAlertForRemove = false
     @State private var showAlreadyRegisteredAlertForSearch = false
     @State private var tempSearchItem: MKMapItem?
-    @Binding var showLocation: Bool  // 位置情報画面の表示フラグ
-    @Binding var registeredLocationArray: [RegisteredLocation]  // NewViewから渡される登録された位置情報の配列
-    @State private var initialLocation: CLLocationCoordinate2D? // 追加: 初期表示位置を保持するプロパティ
-    @State private var selectedRegisteredLocation: RegisteredLocation? // 追加: 選択された登録済み地点を保持するプロパティ
+    @Binding var showLocation: Bool  // MARK: 位置情報画面の表示フラグ
+    @Binding var registeredLocationArray: [RegisteredLocation]  // MARK: NewViewから渡される登録された位置情報の配列
+    @State private var initialLocation: CLLocationCoordinate2D? // MARK: 初期表示位置を保持するプロパティ
+    @State private var selectedRegisteredLocation: RegisteredLocation? // MARK: 選択された登録済み地点を保持するプロパティ
     @State private var memoLocation: CLLocationCoordinate2D?
-    @State var annotationTitle: String? = nil // 追加
+    @State var annotationTitle: String? = nil
 
     init(showLocation: Binding<Bool>,
          registeredLocationArray: Binding<[RegisteredLocation]>,
@@ -81,50 +78,48 @@ struct MapViewContainer: View {
             print("Debug-200 longTapLocation: \(longTapLocation)")
             self._longTapLocation = State(initialValue: nil)
         }
-        
-        
  }
 
     var body: some View {
         HStack {
             Button(action: {
-                showLocation = false  // Cancelボタンが押されたらシートを閉じる
+                showLocation = false  // MARK: Cancelボタンが押されたらシートを閉じる
             }) {
                 Text("Cancel")
             }
             Spacer()
-            Text("Map View")  // タイトルを表示
+            Text("Map View")  // タMARK: イトルを表示
             Spacer()
             Button(action: {
-                // 追加ボタンが押された時の処理
+                // MARK: - 追加ボタンが押された時の処理
                 if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {
-                    // UIApplication.shared.windowsを使用して
-                    // アプリケーションのすべてのウィンドウを取得し、
-                    // その中からキーウィンドウ（現在アクティブなウィンドウ）を見つけます。
-                    // キーウィンドウはユーザーが操作しているウィンドウであり、
-                    // このウィンドウを使ってスナップショットを取得します。
+                    // MARK: -  UIApplication.shared.windowsを使用して
+                    //          アプリケーションのすべてのウィンドウを取得し、
+                    //          その中からキーウィンドウ（現在アクティブなウィンドウ）を見つけます。
+                    //          キーウィンドウはユーザーが操作しているウィンドウであり、
+                    //          このウィンドウを使ってスナップショットを取得します。
                     let window = UIApplication.shared.windows.first { $0.isKeyWindow }
-                    // UIGraphicsImageRendererを初期化し、レンダリングする画像のサイズをキーウィンドウのサイズに設定します。
-                    // window?.bounds.sizeがnilの場合は.zero（サイズ0）を使用します。
+                    // MARK: -  UIGraphicsImageRendererを初期化し、レンダリングする画像のサイズをキーウィンドウのサイズに設定します。
+                    //          window?.bounds.sizeがnilの場合は.zero（サイズ0）を使用します。
                     let renderer = UIGraphicsImageRenderer(size: window?.bounds.size ?? .zero)
-                    // スナップショットの作成
-                    // 現在のウィンドウのヒエラルキー（階層構造）全体を描画します。
-                    // 最新の表示内容がスナップショットに反映されます。
+                    // MARK: -  スナップショットの作成
+                    //          現在のウィンドウのヒエラルキー（階層構造）全体を描画します。
+                    //          最新の表示内容がスナップショットに反映されます。
                     let image = renderer.image { ctx in
                         window?.drawHierarchy(in: window?.bounds ?? .zero, afterScreenUpdates: true)
                     }
-                    // 新しい登録位置+情報の作成
+                    // MARK: - 新しい登録位置+情報の作成
                     let newLocation = RegisteredLocation(name: registerLocationName, coordinate: coordinate, date: Date(), image: image)
                     registeredLocationArray.append(newLocation)
-                    showLocation = false  // 位置情報登録状態中はシートを閉じる
+                    showLocation = false  // MARK: 位置情報登録状態中はシートを閉じる
                 } else {
-                    showLocation = false  // 位置情報登録状態中はシートを閉じる
+                    showLocation = false  // MARK: 情報登録状態中はシートを閉じる
                 }
             }) {
                 Text("追加")
-                    .foregroundColor(justRegisteredFirst ? .blue : .gray)  // 位置情報登録状態中は青色、そうでない場合は灰色
+                    .foregroundColor(justRegisteredFirst ? .blue : .gray)  // MARK: 位置情報登録状態中は青色、そうでない場合は灰色
             }
-            .disabled(!justRegisteredFirst)  // 位置情報登録状態中でない場合はボタンを無効化
+            .disabled(!justRegisteredFirst)  // MARK: 位置情報登録状態中でない場合はボタンを無効化
         }
         .padding()
         Divider()
@@ -137,7 +132,7 @@ struct MapViewContainer: View {
                 hereLocation: $hereLocation,
                 searchLocation: $searchLocation,
                 longTapLocation: $longTapLocation,
-                memoLocation: $memoLocation,  // 追加
+                memoLocation: $memoLocation,
                 shouldShowUserLocationPin: $shouldShowUserLocationPin,
                 shouldShowSearchLocationPin: $shouldShowSearchLocationPin,
                 shouldShowLongTapLocationPin: $shouldShowLongTapLocationPin,
@@ -178,7 +173,7 @@ struct MapViewContainer: View {
                         annotationTitle = selectedResult.name
                         print("Debug annotationTitle 0 = \(annotationTitle)")
                     } else {
-                        selectedSearchResult = nil // 検索結果を無効にする
+                        selectedSearchResult = nil // MARK: 検索結果を無効にする
                     }
                     isSearchItemSelectorPresented = false
                 })
@@ -188,14 +183,14 @@ struct MapViewContainer: View {
                     searchButtonClickCount += 1
                     isSearchBarPresented = true
                 },
-                searchButtonClickCount: searchButtonClickCount, // 追加: searchButtonClickCountを渡す
-                hereButtonClickCount: hereButtonClickCount, // 追加: hereButtonClickCountを渡す
-                removePinButtonClickCount: removePinButtonClickCount, // 追加: removePinButtonClickCountを渡す
-                zoomInButtonClickCount: zoomInButtonClickCount, // 追加: zoomInButtonClickCountを渡す
-                zoomOutButtonClickCount: zoomOutButtonClickCount, // 追加: zoomOutButtonClickCountを渡す
-                registerButtonClickCount: registerButtonClickCount, // 追加: registerButtonClickCountを渡す
-                moveToPinButtonClickCount: moveToPinButtonClickCount, // 追加: moveToPinButtonClickCountを渡す
-                onMoveToPinButtonClicked: { // 追加: onMoveToPinButtonClickedを渡す
+                searchButtonClickCount: searchButtonClickCount, // MARK: searchButtonClickCountを渡す
+                hereButtonClickCount: hereButtonClickCount, // MARK: hereButtonClickCountを渡す
+                removePinButtonClickCount: removePinButtonClickCount, // MARK: removePinButtonClickCountを渡す
+                zoomInButtonClickCount: zoomInButtonClickCount, // MARK: zoomInButtonClickCountを渡す
+                zoomOutButtonClickCount: zoomOutButtonClickCount, //MARK: zoomOutButtonClickCountを渡す
+                registerButtonClickCount: registerButtonClickCount, // MARK: registerButtonClickCountを渡す
+                moveToPinButtonClickCount: moveToPinButtonClickCount, // MARK: moveToPinButtonClickCountを渡す
+                onMoveToPinButtonClicked: { // MARK: onMoveToPinButtonClickedを渡す
                     moveToPinButtonClickCount += 1
                     moveToPin()
                 },
@@ -229,7 +224,7 @@ struct MapViewContainer: View {
                     zoomOutButtonClickCount += 1
                     zoomOut()
                 },
-                onRegisterButtonClicked: { // 変更: 位置登録画面を表示する
+                onRegisterButtonClicked: { // MARK: 位置登録画面を表示する
                     registerButtonClickCount += 1
                     if hereLocation == nil && searchLocation == nil && longTapLocation == nil && memoLocation == nil {      // MARK: Pinが設置されたかを判定
                         showNoPinAlert = true
@@ -238,7 +233,7 @@ struct MapViewContainer: View {
                     }
                 }
             )
-            // ロングタップ説明のテーロップ表示処理
+            // MARK: - ロングタップ説明のテーロップ表示処理
             if showTelopOfDescriptionOfLongTap {
                 GeometryReader { geometry in
                     Text("ロングタップジェスチャーで注目地変更可能")
@@ -252,7 +247,7 @@ struct MapViewContainer: View {
                             }
                         }
                 }
-                .frame(height: 50) // テロップの高さを設定
+                .frame(height: 50) // MARK: テロップの高さを設定
             }
             
             if isRegisterViewPresented {
@@ -269,8 +264,8 @@ struct MapViewContainer: View {
                             isRegisterViewPresented = false
                         }
                     },
-                    isRegisterViewPresented: $isRegisterViewPresented, // 修正: 引数の順序を変更
-                    justRegisteredFirst: $justRegisteredFirst, // 修正: 引数の順序を変更
+                    isRegisterViewPresented: $isRegisterViewPresented, // MARK: 引数の順序を変更
+                    justRegisteredFirst: $justRegisteredFirst, // MARK: 引数の順序を変更
                     hereLocation: $hereLocation,
                     searchLocation: $searchLocation,
                     longTapLocation: $longTapLocation,
@@ -282,8 +277,8 @@ struct MapViewContainer: View {
         }
         .onAppear {
             if let initialLocation = initialLocation {
-                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
-                let region = MKCoordinateRegion(center: initialLocation, span: span) // 表示領域を設定
+                let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // MARK: 表示範囲を設定
+                let region = MKCoordinateRegion(center: initialLocation, span: span) // MARK: 表示領域を設定
                 NotificationCenter.default.post(name: .moveToPin, object: region)
                 if let selectedLocation = selectedRegisteredLocation {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -360,7 +355,7 @@ struct MapViewContainer: View {
         }
     }
     
-    // 現在地の位置情報を取得するメソッド
+    // MARK: - 現在地の位置情報を取得するメソッド
     func getHereLocation() {
         locationManager.startUpdatingLocation()
         if let location = locationManager.location {
@@ -368,17 +363,17 @@ struct MapViewContainer: View {
         }
     }
     
-    // 現在地ボタンがクリックされたときの処理
+    // MARK: - 現在地ボタンがクリックされたときの処理
     func showHereLocation() {
         locationManager.startUpdatingLocation()
         if let location = locationManager.location {
             hereLocation = location.coordinate
-            searchLocation = nil    // 検索結果の位置情報をクリアする
-            longTapLocation = nil   // ロングタップの位置情報をクリアする
+            searchLocation = nil    // MARK: 検索結果の位置情報をクリアする
+            longTapLocation = nil   // MARK: ロングタップの位置情報をクリアする
         }
     }
     
-    // 検索バーの検索ボタンがクリックされたときの処理
+    // MARK: - 検索バーの検索ボタンがクリックされたときの処理
     func search(completion: @escaping () -> Void) {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
@@ -406,12 +401,13 @@ struct MapViewContainer: View {
                     searchLocation = singleResult.placemark.coordinate
                     hereLocation = nil
                     longTapLocation = nil
-                    searchResults = [singleResult] // 選択された結果のみを保持する
+                    searchResults = [singleResult] // MARK: - 選択された結果のみを保持する
                 }
             } else if let _ = searchResults.first {
-                isSearchItemSelectorPresented = true // 検索結果が複数ある場合、SearchItemSelectorViewを表示
+                isSearchItemSelectorPresented = true // MARK: - 検索結果が複数ある場合、SearchItemSelectorViewを表示
             }
             completion()
+            // MARK: - 下記保留
             // for item in searchResults {
             //     print("Debuge Name: \(item.name ?? "No name")")
             //     print("Debuge Phone Number: \(item.phoneNumber ?? "No phone number")")
@@ -422,11 +418,11 @@ struct MapViewContainer: View {
         }
     }
     
-    // 検索ボタンがクリックされたときの処理と検索バーを閉じる処理
+    // MARK: - 検索ボタンがクリックされたときの処理と検索バーを閉じる処理
     func searchAndDismiss() {
         search {
             isSearchBarPresented = false
-            isZooming = false // 検索結果が有効な地点選択後に設定
+            isZooming = false // MARK: 検索結果が有効な地点選択後に設定
         }
     }
     
@@ -441,17 +437,17 @@ struct MapViewContainer: View {
         print("Debug annotationTitle 4 = \(annotationTitle)")
    }
     
-    // ズームインボタンがクリックされたときの処理
+    // MARK: - ズームインボタンがクリックされたときの処理
     func zoomIn() {
         NotificationCenter.default.post(name: .zoomIn, object: nil)
     }
 
-    // ズームアウトボタンがクリックされたときの処理
+    // MARK: - ズームアウトボタンがクリックされたときの処理
     func zoomOut() {
         NotificationCenter.default.post(name: .zoomOut, object: nil)
     }
 
-    // ピンの位置に移動するメソッド
+    // MARK: - ピンの位置に移動するメソッド
     func moveToPin() {
         if let coordinate = searchLocation ?? hereLocation ?? longTapLocation ?? memoLocation{ // MARK: Pinが設置されたかを判定
             let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // 表示範囲を設定
@@ -460,27 +456,21 @@ struct MapViewContainer: View {
         }
     }
     
-    // ピンの位置を登録するメソッド
+    // MARK: - ピンの位置を登録するメソッド
     func registerLocation() {
         if let coordinate = searchLocation ?? hereLocation ?? longTapLocation {     // MARK: Pinが設置されたかを判定
-            // 全ピンを消去
-            // hereLocation = nil
-            // searchLocation = nil
-            // longTapLocation = nil
-
-            // 新規MapItemを作りリストに追加
+            // MARK: - 新規MapItemを作りリストに追加
             let placemark = MKPlacemark(coordinate: coordinate)
             let mapItem = MKMapItem(placemark: placemark)
             mapItem.name = registerLocationName
             registeredLocations.append(mapItem)
             printRegisteredLocations()
 
-            // 登録したピンを再表示
+            // MARK: - 登録したピンを再表示
             if let _ = searchLocation {
                 selectedSearchResult = mapItem
                 hereResult = nil
                 longTapResult = nil
-                // searchLocation = nil
                 hereLocation = nil
                 longTapLocation = nil
             } else if let _ = longTapLocation {
@@ -489,20 +479,18 @@ struct MapViewContainer: View {
                 longTapResult = mapItem
                 searchLocation = nil
                 hereLocation = nil
-                // longTapLocation = nil
             } else if let _ = hereLocation {
                 selectedSearchResult = nil
                 hereResult = mapItem
                 longTapResult = nil
                 searchLocation = nil
-                // hereLocation = nil
                 longTapLocation = nil
             }
-            justRegisteredFirst = true // 追加: 登録扱い
+            justRegisteredFirst = true // MARK: 登録扱い
         }
     }
 
-    // 登録された全ての位置情報を表示するメソッド
+    // MARK: - 登録された全ての位置情報を表示するメソッド
     func printRegisteredLocations() {
         for (index, location) in registeredLocations.enumerated() {
             print("\(index + 1): \(location)")

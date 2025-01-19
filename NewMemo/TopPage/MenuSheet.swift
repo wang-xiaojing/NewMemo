@@ -28,7 +28,7 @@ struct MenuSheet: View {
                         Image(systemName: "checkmark")
                             .foregroundColor(selectedRow == index ? .red : .clear)
                     }
-                    .contentShape(Rectangle()) // 行全体をタップ可能にする
+                    .contentShape(Rectangle()) // MARK: 行全体をタップ可能にする
                     .onTapGesture {
                         selectedRow = index
                     }

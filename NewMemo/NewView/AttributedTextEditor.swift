@@ -22,7 +22,7 @@ struct AttributedTextEditor: UIViewRepresentable {
         textView.isScrollEnabled = true
         textView.backgroundColor = .clear
 
-        // キーボードに「DONE」ボタンを追加
+        // MARK: - キーボードに「DONE」ボタンを追加
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         let doneButton = UIBarButtonItem(title: "DONE", style: .done, target: textView, action: #selector(textView.resignFirstResponder))
